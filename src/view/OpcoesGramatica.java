@@ -2,8 +2,6 @@ package view;
 
 import java.awt.Container;
 import java.awt.Font;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 
+import model.Gramatica;
+import model.GramaticaUtils;
 import utils.GramaticaParser;
 
 public class OpcoesGramatica extends JFrame {
@@ -96,7 +96,8 @@ public class OpcoesGramatica extends JFrame {
         JButton firstNT = new JButton("FirstNT(A)");
         JButton LL1 = new JButton("Verificar LL(1)");
         LL1.addActionListener(event -> {
-        	GramaticaParser.textToGramatica(conteudoGramatica.getText());
+        	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoGramatica.getText());
+        	GramaticaUtils.isGramaticaLL1(gramatica);
         });
         
         JButton tabela = new JButton("Construir Tabela de Parsing");

@@ -21,7 +21,13 @@ public class VEstrela {
 	
 	public VEstrela(VEstrela simbolos) {
 		this.inserirSimbolos(simbolos);
+		this.ORDEM = simbolos.ORDEM;
 	}
+	
+	public VEstrela(int ordem) {
+		this.ORDEM = ordem;
+	}
+	
 	
 	public List<Simbolo> getSimbolos() {
 		return simbolos;

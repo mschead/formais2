@@ -45,10 +45,18 @@ public class GramaticaUtils {
 				for (VEstrela simbolos : ladoDireito) {
 					if (!simbolos.primeiroSimboloTerminal()) {
 						int index = 0;
+						boolean podeDerivarEpsilon = false;
 						boolean acabou = false;
 						while (!acabou) {
 							VEstrela firstNT = first.get(simbolos.getSimbolos().get(index));
 							if (firstNT != null) {
+								if (firstNT.possuiEpsilon()) {
+									firstNT = new VEstrela(firstNT);	//clone
+									firstNT.retirarEpsilons();
+									podeDerivarEpsilon = true;
+								} else {
+									podeDerivarEpsilon = false;
+								}
 								VEstrela firstSimboloAtual = first.get(ladoEsquerdo);
 								if (firstSimboloAtual == null) {
 									firstSimboloAtual = new VEstrela(firstNT);
@@ -59,7 +67,7 @@ public class GramaticaUtils {
 								
 								// diferenciar analise do ultimo simbolo do resto
 								if (simbolos.getSimbolos().size() - index != 1) {
-									if (firstNT.possuiEpsilon()) {
+									if (podeDerivarEpsilon) {
 										index++;
 									} else {
 										acabou = true;
@@ -68,7 +76,7 @@ public class GramaticaUtils {
 										}
 									}
 								} else {
-									if (firstNT.possuiEpsilon()) {
+									if (podeDerivarEpsilon) {
 										firstSimboloAtual.inserirSimbolo(Simbolo.EPSILON);
 									} else {
 										index++;
@@ -169,15 +177,20 @@ public class GramaticaUtils {
 	}
 	
 	// conjunto de símbolos de Vn que podem iniciar sequências derivadas de A
-	public static Set<Simbolo> calcularFirstNT(Gramatica gramatica) {
+	public static Set<Simbolo> calcularFirstNT(Gramatica gramatica, Map<Simbolo, VEstrela> first) {
 		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
 		Set<Simbolo> firstNT = new HashSet<>();
 		
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
 			Set<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
 			for (VEstrela simbolos : ladoDireito) {
-				if (simbolos.primeiroSimbolo().equals(ladoEsquerdo)) {
-					firstNT.add(ladoEsquerdo);
+				for (Simbolo simbolo : simbolos.getSimbolos()) {
+					if (!simbolo.isTerminal() && simbolo.equals(ladoEsquerdo)) {
+						firstNT.add(ladoEsquerdo);
+						break;
+					} else if (first.get(ladoEsquerdo).getSimbolos().contains(Simbolo.EPSILON)) {
+						
+					}
 				}
 			}
 		}
@@ -196,20 +209,23 @@ public class GramaticaUtils {
 			
 			for (VEstrela simbolos : ladoDireito) {
 				int index = 0;
-				boolean achouTerminalOuNaoPossuiEpsilon = false;
+				boolean achouTerminalOuNaoDerivaEpsilon = false;
 				VEstrela firstAlfa = new VEstrela();
+				boolean podeDerivarEpsilon = false;
 				
-				while (!achouTerminalOuNaoPossuiEpsilon) {
+				while (!achouTerminalOuNaoDerivaEpsilon) {
 					Simbolo simbolo = simbolos.getSimbolos().get(index);
 					if (simbolo.equals(Simbolo.EPSILON)) {
 						firstAlfa.inserirSimbolo(Simbolo.EPSILON);
 						break;
 					}
 					VEstrela firstCalculado = first.get(simbolo);
+					
 					firstAlfa.inserirSimbolos(firstCalculado);
-					if (simbolo.isTerminal() || !firstCalculado.possuiEpsilon()) {
-						achouTerminalOuNaoPossuiEpsilon = true;
+					if (simbolo.isTerminal() || !podeDerivarEpsilon) {
+						achouTerminalOuNaoDerivaEpsilon = true;
 					}
+					
 				}
 				List<AlfaNumero> lista = firstPorAlfa.get(ladoEsquerdo);
 				lista.add(new AlfaNumero(firstAlfa, simbolos.obterOrdem()));
@@ -243,7 +259,6 @@ public class GramaticaUtils {
 		return false;
 	}
 	
-	//precisa dos first e follow
 	public static Map<Simbolo, List<AlfaNumero>> construirTabelaParsing(Gramatica gramatica, Map<Simbolo, VEstrela> first, Map<Simbolo, VEstrela> follow) {
 		Map<Simbolo, List<AlfaNumero>> estruturaParser = new HashMap<>();
 		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
@@ -256,19 +271,36 @@ public class GramaticaUtils {
 			for (VEstrela simbolos : ladoDireito) {
 				int index = 0;
 				boolean achouTerminalOuNaoPossuiEpsilon = false;
-				VEstrela firstAlfa = new VEstrela();
+				boolean podeDerivarEpsilon = false;
+				VEstrela firstAlfa = new VEstrela(simbolos.obterOrdem());
 				
-				while (!achouTerminalOuNaoPossuiEpsilon) {
+				while (!achouTerminalOuNaoPossuiEpsilon && index < simbolos.getSimbolos().size()) {
 					Simbolo simbolo = simbolos.getSimbolos().get(index);
 					if (simbolo.equals(Simbolo.EPSILON)) {
 						firstAlfa.inserirSimbolos(follow.get(ladoEsquerdo));
 						break;
 					}
 					VEstrela firstCalculado = first.get(simbolo);
-					firstAlfa.inserirSimbolos(firstCalculado);
-					if (simbolo.isTerminal() || !firstCalculado.possuiEpsilon()) {
-						achouTerminalOuNaoPossuiEpsilon = true;
+					if (firstCalculado.possuiEpsilon()) {
+						firstCalculado = new VEstrela(firstCalculado);	//clone
+						firstCalculado.retirarEpsilons();
+						podeDerivarEpsilon = true;
+					} else {
+						podeDerivarEpsilon = false;
 					}
+					
+					firstAlfa.inserirSimbolos(firstCalculado);
+					
+					if (index == simbolos.getSimbolos().size() - 1 && podeDerivarEpsilon) {
+						firstAlfa.inserirSimbolos(follow.get(ladoEsquerdo));
+					}
+					
+					if (simbolo.isTerminal() || !podeDerivarEpsilon) {
+						achouTerminalOuNaoPossuiEpsilon = true;
+					} else {
+						index++;
+					}
+					
 				}
 				List<AlfaNumero> lista = estruturaParser.get(ladoEsquerdo);
 				lista.add(new AlfaNumero(firstAlfa, simbolos.obterOrdem()));
