@@ -37,24 +37,24 @@ public class GramaticaParser {
 					simbolosNaoTerminais.add(naoTerminal);
 					if (!inicialAdicionado) {
 						gramaticaModelo.setSimboloInicial(naoTerminal);
+						inicialAdicionado = true;
 					}
-				}
-				
-				if (index == 1) {
 				}
 				
 				if (index > 1) {
 					if(!simbolo.equals("|")) {
-						boolean isTerminal = true;
-						Simbolo simboloParaGramatica;
+						Simbolo simboloParaGramatica = null;
 						if (simbolo.matches("[A-Z][0-9]*")) {
 							simboloParaGramatica = new Simbolo(simbolo, false);
 							simbolosNaoTerminais.add(simboloParaGramatica);
-						} else {
+							simbolosObtidos.add(simboloParaGramatica);
+						} else if (!simbolo.equals("&")) {
 							simboloParaGramatica = new Simbolo(simbolo, true);
 							simbolosTerminais.add(simboloParaGramatica);
+							simbolosObtidos.add(simboloParaGramatica);
+						} else if (simbolo.equals("&")) {
+							simbolosObtidos.add(Simbolo.EPSILON);
 						}
-						simbolosObtidos.add(new Simbolo(simbolo, isTerminal));
 					} else {
 						ladoDireito.add(new VEstrela(simbolosObtidos));
 						simbolosObtidos = new ArrayList<>();
@@ -64,17 +64,34 @@ public class GramaticaParser {
 						ladoDireito.add(new VEstrela(simbolosObtidos));
 						producoes.put(naoTerminal, ladoDireito);
 					}
-					
-					
-					
 				}  
-				
 			}
-				
 		}
 		
-		
+		gramaticaModelo.setSimbolosNaoTerminais(simbolosNaoTerminais);
+		gramaticaModelo.setSimbolosTerminais(simbolosTerminais);
+		gramaticaModelo.setProducoes(producoes);
 		return gramaticaModelo;
 	}
 
+	
+	public static String gramaticaToText(Gramatica gramatica) {
+		StringBuilder g = new StringBuilder();
+		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		
+		for (Simbolo ladoEsquerdo : producoes.keySet()) {
+			List<VEstrela> ladoDireito = new ArrayList<>(producoes.get(ladoEsquerdo));
+			g.append(ladoEsquerdo + " -> ");
+			for (int index = 0; index < ladoDireito.size(); index++) {
+				VEstrela alfa = ladoDireito.get(index);
+				g.append(alfa);
+				if (ladoDireito.size() - 1 != index) {
+					g.append(" | ");
+				}
+			}
+			g.append("\n");
+		}
+		return g.toString();
+	}
+	
 }

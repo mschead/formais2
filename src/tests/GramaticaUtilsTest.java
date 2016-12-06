@@ -12,9 +12,10 @@ import org.junit.Test;
 
 import model.AlfaNumero;
 import model.Gramatica;
-import model.GramaticaUtils;
 import model.Simbolo;
 import model.VEstrela;
+import utils.GramaticaParser;
+import utils.GramaticaUtils;
 
 public class GramaticaUtilsTest {
 
@@ -322,5 +323,72 @@ public class GramaticaUtilsTest {
 		
 		GramaticaUtils.verificarFatoracao(gramatica, first);
 	}
+	
+	@Test
+	public void testarParserGramaticaToText() {
+		Set<Simbolo> simbolosTerminais = new HashSet<>();
+		Simbolo mais = new Simbolo("+", true);
+		simbolosTerminais.add(mais);
+		Simbolo vezes = new Simbolo("*", true);
+		simbolosTerminais.add(vezes);
+		Simbolo abreP = new Simbolo("(", true);
+		simbolosTerminais.add(abreP);
+		Simbolo fechaP = new Simbolo(")", true);
+		simbolosTerminais.add(fechaP);
+		Simbolo id = new Simbolo("id", true);
+		simbolosTerminais.add(id);
+		
+		Set<Simbolo> simbolosNaoTerminais = new HashSet<>();
+		Simbolo letraE = new Simbolo("E", false);
+		simbolosNaoTerminais.add(letraE);
+		Simbolo letraD = new Simbolo("D", false);
+		simbolosNaoTerminais.add(letraD);
+		Simbolo letraT = new Simbolo("T", false);
+		simbolosNaoTerminais.add(letraT);
+		Simbolo letraS = new Simbolo("S", false);
+		simbolosNaoTerminais.add(letraS);
+		Simbolo letraF = new Simbolo("F", false);
+		simbolosNaoTerminais.add(letraF);		
+		
+		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		
+		Set<VEstrela> ladoDireitoE = new HashSet<>();
+		ladoDireitoE.add(new VEstrela(letraT, letraD));
+		
+		producoes.put(letraE, ladoDireitoE);
+		
+		Set<VEstrela> ladoDireitoD = new HashSet<>();
+		ladoDireitoD.add(new VEstrela(mais, letraT, letraD));
+		ladoDireitoD.add(new VEstrela(Simbolo.EPSILON));
+		
+		producoes.put(letraD, ladoDireitoD);
+		
+		Set<VEstrela> ladoDireitoT = new HashSet<>();
+		ladoDireitoT.add(new VEstrela(letraF, letraS));
+
+		producoes.put(letraT, ladoDireitoT);
+		
+		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		ladoDireitoS.add(new VEstrela(vezes, letraF, letraS));
+		ladoDireitoS.add(new VEstrela(Simbolo.EPSILON));
+		
+		producoes.put(letraS, ladoDireitoS);
+		
+		Set<VEstrela> ladoDireitoF = new HashSet<>();
+		ladoDireitoF.add(new VEstrela(abreP, letraE, fechaP));
+		ladoDireitoF.add(new VEstrela(id));
+		
+		producoes.put(letraF, ladoDireitoF);
+		
+		Gramatica gramatica = new Gramatica();
+		gramatica.setSimboloInicial(letraE);
+		gramatica.setSimbolosTerminais(simbolosTerminais);
+		gramatica.setSimbolosNaoTerminais(simbolosNaoTerminais);
+		gramatica.setProducoes(producoes);
+		
+		String textGramatica = GramaticaParser.gramaticaToText(gramatica);
+		
+	}
+	
 	
 }

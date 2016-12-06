@@ -1,4 +1,4 @@
-package model;
+package utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import model.AlfaNumero;
+import model.Gramatica;
+import model.Simbolo;
+import model.VEstrela;
 
 public class GramaticaUtils {
 
@@ -153,13 +158,17 @@ public class GramaticaUtils {
 							if (!naoTerminalAtual.isTerminal()) {
 								VEstrela followQueRecebe = follow.get(naoTerminalAtual);
 								if (followQueRecebe != null) {
-									modificado = followQueRecebe.inserirSimbolos(followLadoEsquerdo);
+									if (modificado) {
+										followQueRecebe.inserirSimbolos(followLadoEsquerdo);
+									} else {
+										modificado = followQueRecebe.inserirSimbolos(followLadoEsquerdo);
+									}
 								} else {
 									followQueRecebe = new VEstrela(followLadoEsquerdo);
 									follow.put(naoTerminalAtual, followQueRecebe);
 									modificado = true;
 								}
-								
+								//teste
 								if (!first.get(naoTerminalAtual).possuiEpsilon()) {
 									naoTerminalDerivaEpsilon = false;
 								}
@@ -177,7 +186,7 @@ public class GramaticaUtils {
 	}
 	
 	// conjunto de símbolos de Vn que podem iniciar sequências derivadas de A
-	public static Set<Simbolo> calcularFirstNT(Gramatica gramatica, Map<Simbolo, VEstrela> first) {
+	public static Map<Simbolo, VEstrela> calcularFirstNT(Gramatica gramatica, Map<Simbolo, VEstrela> first) {
 		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
 		Set<Simbolo> firstNT = new HashSet<>();
 		
@@ -195,7 +204,7 @@ public class GramaticaUtils {
 			}
 		}
 		
-		return firstNT;
+		return null;
 	}
 	
 	public static boolean verificarFatoracao(Gramatica gramatica, Map<Simbolo, VEstrela> first) {

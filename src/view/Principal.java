@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -18,16 +20,22 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
+import model.AlfaNumero;
 import model.Gramatica;
-import model.GramaticaUtils;
+import model.Simbolo;
+import model.VEstrela;
 import utils.GramaticaParser;
+import utils.GramaticaUtils;
 
-public class OpcoesGramatica extends JFrame {
+public class Principal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	public OpcoesGramatica() {
+	public Principal() {
 		inicializar();
 	}
 
@@ -91,16 +99,63 @@ public class OpcoesGramatica extends JFrame {
         
 
         JButton propria = new JButton("Gerar Própria");
-        JButton first = new JButton("First(A)");
-        JButton follow = new JButton("Follow(A)");
-        JButton firstNT = new JButton("FirstNT(A)");
-        JButton LL1 = new JButton("Verificar LL(1)");
-        LL1.addActionListener(event -> {
+        propria.addActionListener(event -> {
         	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoGramatica.getText());
-        	GramaticaUtils.isGramaticaLL1(gramatica);
+        	Gramatica gramaticaPropria = GramaticaUtils.obterPropria(gramatica);
+        	String gramaticaText = GramaticaParser.gramaticaToText(gramaticaPropria);
+        	conteudoGramatica.setText(gramaticaText);
+        	JOptionPane.showMessageDialog(null, "Gramática própria gerada com sucesso.");
         });
         
-        JButton tabela = new JButton("Construir Tabela de Parsing");
+        JButton firstButton = new JButton("First(A)");
+        firstButton.addActionListener(event -> {
+        	String conteudoComponente = conteudoGramatica.getText();
+        	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
+        	Map<Simbolo, VEstrela> firstTodagramatica = GramaticaUtils.calcularFirst(gramatica);
+        	new PainelGenerico(new TableModelFirst(firstTodagramatica));
+        });
+        
+        JButton followButton = new JButton("Follow(A)");
+        followButton.addActionListener(event -> {
+        	String conteudoComponente = conteudoGramatica.getText();
+        	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
+        	Map<Simbolo, VEstrela> firstTodaGramatica = GramaticaUtils.calcularFirst(gramatica);
+        	Map<Simbolo, VEstrela> followTodaGramatica = GramaticaUtils.calcularFollow(gramatica, firstTodaGramatica);
+        	new PainelGenerico(new TabelaModelFollow(followTodaGramatica));
+        });
+        
+        JButton firstNTButton = new JButton("FirstNT(A)");
+        firstNTButton.addActionListener(event -> {
+        	String conteudoComponente = conteudoGramatica.getText();
+        	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
+        	Map<Simbolo, VEstrela> firstTodaGramatica = GramaticaUtils.calcularFirst(gramatica);
+        	Map<Simbolo, VEstrela> followTodaGramatica = GramaticaUtils.calcularFirstNT(gramatica, firstTodaGramatica);
+        	new PainelGenerico(new TabelaModelFirstNT(followTodaGramatica));
+        });
+        
+        
+        JButton LL1Button = new JButton("Verificar LL(1)");
+        LL1Button.addActionListener(event -> {
+        	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoGramatica.getText());
+        	if (GramaticaUtils.isGramaticaLL1(gramatica)) {
+        		JOptionPane.showMessageDialog(null, "A gramática é LL(1).");
+        	} else {
+        		JOptionPane.showMessageDialog(null, "Gramática não é LL(1).");
+        	}
+        });
+        
+        JButton parsingButton = new JButton("Construir Tabela de Parsing");
+        parsingButton.addActionListener(event -> {
+        	String conteudoComponente = conteudoGramatica.getText();
+        	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
+        	Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
+        	Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+        	Map<Simbolo, List<AlfaNumero>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
+
+        	
+        	new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais()));        	
+        });
+        
         JButton analise = new JButton("Fazer análise sintática");
         
         toolbar1.add(newb);
@@ -108,11 +163,11 @@ public class OpcoesGramatica extends JFrame {
         toolbar1.add(saveb);
         
         toolbar2.add(propria);
-        toolbar2.add(first);
-        toolbar2.add(follow);
-        toolbar2.add(firstNT);
-        toolbar2.add(LL1);
-        toolbar2.add(tabela);
+        toolbar2.add(firstButton);
+        toolbar2.add(followButton);
+        toolbar2.add(firstNTButton);
+        toolbar2.add(LL1Button);
+        toolbar2.add(parsingButton);
         toolbar2.add(analise);
         
         createLayout(toolbar1, toolbar2, panelGramatica);
@@ -134,7 +189,7 @@ public class OpcoesGramatica extends JFrame {
     }	
 	
 	public static void main(String[] args) {
-     	OpcoesGramatica panel = new OpcoesGramatica();
+     	Principal panel = new Principal();
 		panel.setTitle("Formais");
 //      panel.setSize(1000, 500);
         panel.pack();

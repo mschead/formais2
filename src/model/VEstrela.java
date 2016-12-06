@@ -38,7 +38,7 @@ public class VEstrela {
 	}
 	
 	public void definirOrdem() {
-		this.ORDEM = INDEX++;
+		this.ORDEM = ++INDEX;
 	}
 	
 	public int obterOrdem() {
@@ -140,7 +140,16 @@ public class VEstrela {
 
 	@Override
 	public String toString() {
-		return simbolos.toString();
+		StringBuilder s = new StringBuilder();
+		
+		for (int index = 0; index < simbolos.size(); index++) {
+			if (index != simbolos.size() - 1)
+				s.append(simbolos.get(index) + " ");
+			else
+				s.append(simbolos.get(index));
+		}
+		
+		return s.toString();
 	}
 	
 }
