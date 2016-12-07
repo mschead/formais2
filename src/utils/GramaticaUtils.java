@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import model.AlfaNumero;
 import model.Gramatica;
 import model.Simbolo;
 import model.VEstrela;
@@ -378,7 +377,7 @@ public class GramaticaUtils {
 	}
 	
 	// analise sintatica, precisa da tabela
-	public static boolean reconheceSentenca(Gramatica gramatica, Map<Simbolo, List<AlfaNumero>> estruturaParser, List<Simbolo> sentenca) {
+	public static boolean reconheceSentenca(Gramatica gramatica, Map<Simbolo, List<VEstrela>> estruturaParser, List<Simbolo> sentenca) {
 		VEstrela parse = new VEstrela(gramatica.getSimboloInicial(), Simbolo.DOLAR);
 		sentenca.add(Simbolo.DOLAR);
 		
@@ -398,11 +397,11 @@ public class GramaticaUtils {
 					return false; // erro de análise sintática
 				}
 			} else {
-				List<AlfaNumero> alfaNumero = estruturaParser.get(simbolo);
+				List<VEstrela> alfaNumero = estruturaParser.get(simbolo);
 				int numeroProducao = -1;
-				for (AlfaNumero par : alfaNumero) {
-					if (par.getAlfa().possuiSimbolo(posicaoSentenca)) {
-						numeroProducao = par.getNumero();
+				for (VEstrela par : alfaNumero) {
+					if (par.possuiSimbolo(posicaoSentenca)) {
+						numeroProducao = par.obterOrdem();
 						break;
 					}
 				}

@@ -148,11 +148,8 @@ public class Principal extends JFrame {
         	Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
         	Map<Simbolo, List<VEstrela>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
 
-        	
-        	new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais()));        	
+        	new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais())).adicionarBotao(conteudoGramatica.getText());        	
         });
-        
-        JButton analise = new JButton("Fazer análise sintática");
         
         toolbar1.add(newb);
         toolbar1.add(openb);
@@ -164,7 +161,6 @@ public class Principal extends JFrame {
         toolbar2.add(firstNTButton);
         toolbar2.add(LL1Button);
         toolbar2.add(parsingButton);
-        toolbar2.add(analise);
         
         createLayout(toolbar1, toolbar2, panelGramatica);
     }
