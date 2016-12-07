@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 
 import javax.swing.GroupLayout;
@@ -100,6 +101,10 @@ public class Principal extends JFrame {
         	Gramatica gramaticaPropria = GramaticaUtils.obterPropria(gramatica);
         	String gramaticaText = GramaticaParser.gramaticaToText(gramaticaPropria);
         	conteudoGramatica.setText(gramaticaText);
+        	System.out.println(gramatica);
+        	System.out.println(gramaticaPropria);
+        	
+        	System.out.println(gramaticaText);
         	JOptionPane.showMessageDialog(null, "Gramática própria gerada com sucesso.");
         });
         
@@ -125,8 +130,8 @@ public class Principal extends JFrame {
         	String conteudoComponente = conteudoGramatica.getText();
         	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
         	Map<Simbolo, VEstrela> firstTodaGramatica = GramaticaUtils.calcularFirst(gramatica);
-//        	Map<Simbolo, VEstrela> followTodaGramatica = GramaticaUtils.calcularFirstNT(gramatica, firstTodaGramatica);
-//        	new PainelGenerico(new TabelaModelFirstNT(followTodaGramatica));
+        	Map<Simbolo, List<Simbolo>> firstNTGramatica = GramaticaUtils.calcularFirstNT(gramatica, firstTodaGramatica);
+        	new PainelGenerico(new TabelaModelFirstNT(firstNTGramatica));
         });
         
         

@@ -212,35 +212,37 @@ public class GramaticaUtils {
 			for (Simbolo naoTerminal : gramatica.getSimbolosNaoTerminais()) {
 				List<Simbolo> firstNTA = firstNT.get(naoTerminal);
 				List<Simbolo> firstNTAAux = firstNTAux.get(naoTerminal);
-					for (Simbolo s : firstNTA) {
-					if (firstNTAAux.contains(s)) {
+				for (Simbolo s : firstNTA) {
+					if (!firstNTAAux.contains(s)) {
 						firstNTAAux.add(s);
 					}
 				}				
-				firstNTAAux.addAll(firstNTA);
 			}
 			// para cada producaoA -> B, se o primeiro simbolo de B for um naoTerminal, adiciona o nao Terminal em firstNT(A)
 			// se & C first(B), repita o processo para o proximo simbolo de B
 			for (Simbolo ladoEsquerdo : producoes.keySet()) {
-				List<Simbolo> firstNTA = firstNT.get(ladoEsquerdo);
+				List<Simbolo> firstNTA = new ArrayList<>();
+				for (Simbolo s : firstNT.get(ladoEsquerdo)) {
+					firstNTA.add(s);
+				}
 				for (VEstrela producao : producoes.get(ladoEsquerdo)) {
 					for (int i = 0; i < producao.getSimbolos().size(); i++) {
 						Simbolo s = producao.getSimbolos().get(i);
 						if (s.isTerminal()) {
 							break;
 						}
-						firstNTA.add(s);
+						if (!firstNTA.contains(s)) {
+							firstNTA.add(s);
+						}
 						if (!first.get(s).possuiEpsilon()) {
 							break;
 						}
-						for (Simbolo ladoEsq : firstNT.keySet()) {
-							for (Simbolo s2 : firstNT.get(ladoEsq)) {
-								if (firstNTA.contains(s2)) {
-									firstNTA.add(s2);
-								}
-							}
-						}
-						
+					}
+				}
+				List<Simbolo> list = firstNT.get(ladoEsquerdo);
+				for (Simbolo s2 : firstNTA) {
+					if (!list.contains(s2)) {
+						list.add(s2);
 					}
 				}
 			}
@@ -447,9 +449,9 @@ public class GramaticaUtils {
 		return true;
 	}
 
-	public static Gramatica obterSemCiclos(Gramatica gramatica) {
-		Gramatica glinha = new Gramatica(gramatica);
-		glinha = obterEpsilonLivre(glinha);
+	public static Gramatica obterSemCiclos(Gramatica glc) {
+		Gramatica gramatica = new Gramatica(glc);
+		gramatica = obterEpsilonLivre(glc);
 		Map<Simbolo, Set<Simbolo>> N = new HashMap<>();
 		Map<Simbolo, Set<Simbolo>> Nmenos1 = new HashMap<>();
 		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
@@ -511,9 +513,9 @@ public class GramaticaUtils {
 			}
 		}
 		
-		glinha.setProducoes(novasProducoes);
+		gramatica.setProducoes(novasProducoes);
 		
-		return glinha;
+		return gramatica;
 	}
 	
 	public static Gramatica obterEpsilonLivre(Gramatica gramatica) {
@@ -759,7 +761,7 @@ public class GramaticaUtils {
 		glinha = obterSemCiclos(glinha);
 		Gramatica glinha2 = new Gramatica(glinha);
 		glinha2 = obterSemSimbolosInuteis(glinha);
-		return glinha;
+		return glinha2;
 	}
 	
 }
