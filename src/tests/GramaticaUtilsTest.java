@@ -1,7 +1,8 @@
 package tests;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,7 @@ import model.VEstrela;
 
 public class GramaticaUtilsTest {
 
+	@SuppressWarnings("unused")
 	@Test
 	public void verificarFirst() {
 		Set<Simbolo> simbolosTerminais = new HashSet<>();
@@ -82,6 +84,7 @@ public class GramaticaUtilsTest {
 		
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		
 		Map<Simbolo, List<AlfaNumero>> parser = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
 		ArrayList<Simbolo> sentenca = new ArrayList<>();
@@ -101,10 +104,11 @@ public class GramaticaUtilsTest {
 		
 //		GramaticaUtils.reconheceSentenca(gramatica, parser, sentenca2);
 		
-		GramaticaUtils.verificarFatoracao(gramatica, first);
+		GramaticaUtils.estaFatorada(gramatica, first);
 	}
 	
 	
+	@SuppressWarnings("unused")
 	@Test
 	public void verificarFirst2() {
 		Set<Simbolo> simbolosTerminais = new HashSet<>();
@@ -151,9 +155,14 @@ public class GramaticaUtilsTest {
 		
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		
+		assertTrue(GramaticaUtils.firstInterseccaoFollowVazia(first, follow));
+
 		
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void verificarFirst3() {
 		Set<Simbolo> simbolosTerminais = new HashSet<>();
@@ -189,14 +198,19 @@ public class GramaticaUtilsTest {
 		gramatica.setProducoes(producoes);
 		
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
-		GramaticaUtils.calcularFollow(gramatica, first);
+		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		
-//		GramaticaUtils.verificarFatoracao(gramatica, first);
+		assertTrue(GramaticaUtils.firstInterseccaoFollowVazia(first, follow));
+
 		
+		GramaticaUtils.estaFatorada(gramatica, first);
+
 	}
 	
 	
 	
+	@SuppressWarnings("unused")
 	@Test
 	/* G: P 	 -> B Plinha
 	 *    Plinha -> ; B Plinha | &
@@ -307,6 +321,10 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		
+		assertFalse(GramaticaUtils.firstInterseccaoFollowVazia(first, follow));
+		
 		Map<Simbolo, List<AlfaNumero>> parser = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
 		ArrayList<Simbolo> sentenca = new ArrayList<>();
 		
@@ -318,9 +336,428 @@ public class GramaticaUtilsTest {
 		
 		GramaticaUtils.reconheceSentenca(gramatica, parser, sentenca);
 		
-		
-		
-		GramaticaUtils.verificarFatoracao(gramatica, first);
+		assertTrue(GramaticaUtils.estaFatorada(gramatica, first));
 	}
 	
+	@SuppressWarnings("unused")
+	@Test
+	public void verificarInuteisG1() {
+		Set<Simbolo> simbolosTerminais = new HashSet<>();
+		Simbolo a = new Simbolo("a", true);
+		simbolosTerminais.add(a);
+		Simbolo b = new Simbolo("b", true);
+		simbolosTerminais.add(b);
+		Simbolo c = new Simbolo("c", true);
+		simbolosTerminais.add(c);
+		Simbolo d = new Simbolo("d", true);
+		simbolosTerminais.add(d);
+		
+		Set<Simbolo> simbolosNaoTerminais = new HashSet<>();
+		Simbolo letraS = new Simbolo("S", false);
+		simbolosNaoTerminais.add(letraS);
+		Simbolo letraA = new Simbolo("A", false);
+		simbolosNaoTerminais.add(letraA);
+		Simbolo letraB = new Simbolo("B", false);
+		simbolosNaoTerminais.add(letraB);
+		Simbolo letraC = new Simbolo("C", false);
+		simbolosNaoTerminais.add(letraC);
+		Simbolo letraD = new Simbolo("D", false);
+		simbolosNaoTerminais.add(letraD);
+		Simbolo letraE = new Simbolo("E", false);
+		simbolosNaoTerminais.add(letraE);
+		
+		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		
+		
+		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		ladoDireitoS.add(new VEstrela(a, letraS));
+		ladoDireitoS.add(new VEstrela(letraB, letraC));
+		ladoDireitoS.add(new VEstrela(letraB, letraD));
+		
+		producoes.put(letraS, ladoDireitoS);
+		
+		Set<VEstrela> ladoDireitoA = new HashSet<>();
+		ladoDireitoA.add(new VEstrela(c, letraC));
+		ladoDireitoA.add(new VEstrela(letraA, letraB));
+		
+		producoes.put(letraA, ladoDireitoA);
+		
+		Set<VEstrela> ladoDireitoB = new HashSet<>();
+		ladoDireitoB.add(new VEstrela(b, letraB));
+		ladoDireitoB.add(new VEstrela(Simbolo.EPSILON));
+		
+		producoes.put(letraB, ladoDireitoB);
+		
+		Set<VEstrela> ladoDireitoC = new HashSet<>();
+		ladoDireitoC.add(new VEstrela(a, letraA));
+		ladoDireitoC.add(new VEstrela(letraB, letraC));
+		
+		producoes.put(letraC, ladoDireitoC);
+		
+		Set<VEstrela> ladoDireitoD = new HashSet<>();
+		ladoDireitoD.add(new VEstrela(d, letraD, d));
+		ladoDireitoD.add(new VEstrela(c));
+		
+		producoes.put(letraD, ladoDireitoD);
+		
+		Set<VEstrela> ladoDireitoE = new HashSet<>();
+		ladoDireitoE.add(new VEstrela(c));
+		
+		producoes.put(letraE, ladoDireitoE);
+		
+		Gramatica gramatica = new Gramatica();
+		gramatica.setSimboloInicial(letraS);
+		gramatica.setSimbolosTerminais(simbolosTerminais);
+		gramatica.setSimbolosNaoTerminais(simbolosNaoTerminais);
+		gramatica.setProducoes(producoes);
+		
+		Gramatica semInfertil = GramaticaUtils.obterSemInferteis(gramatica);
+		Gramatica semInalcancaveis = GramaticaUtils.obterSemInalcancaveis(semInfertil);
+		
+		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
+		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+		
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		assertFalse(GramaticaUtils.estaFatorada(gramatica, first));
+		
+		int i = 0;
+	}
+	
+	@SuppressWarnings("unused")
+	@Test
+	public void verificarInuteisG2() {
+		Set<Simbolo> simbolosTerminais = new HashSet<>();
+		Simbolo a = new Simbolo("a", true);
+		simbolosTerminais.add(a);
+		Simbolo b = new Simbolo("b", true);
+		simbolosTerminais.add(b);
+		Simbolo c = new Simbolo("c", true);
+		simbolosTerminais.add(c);
+		Simbolo d = new Simbolo("d", true);
+		simbolosTerminais.add(d);
+		
+		Set<Simbolo> simbolosNaoTerminais = new HashSet<>();
+		Simbolo letraS = new Simbolo("S", false);
+		simbolosNaoTerminais.add(letraS);
+		Simbolo letraA = new Simbolo("A", false);
+		simbolosNaoTerminais.add(letraA);
+		Simbolo letraB = new Simbolo("B", false);
+		simbolosNaoTerminais.add(letraB);
+		Simbolo letraC = new Simbolo("C", false);
+		simbolosNaoTerminais.add(letraC);
+		Simbolo letraD = new Simbolo("D", false);
+		simbolosNaoTerminais.add(letraD);
+		Simbolo letraE = new Simbolo("E", false);
+		simbolosNaoTerminais.add(letraE);
+		
+		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		
+		
+		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		ladoDireitoS.add(new VEstrela(a, letraS));
+		ladoDireitoS.add(new VEstrela(letraB, letraC));
+		ladoDireitoS.add(new VEstrela(letraB, letraD));
+		
+		producoes.put(letraS, ladoDireitoS);
+		
+		Set<VEstrela> ladoDireitoA = new HashSet<>();
+		ladoDireitoA.add(new VEstrela(c, letraC));
+		ladoDireitoA.add(new VEstrela(letraA, letraB));
+		
+		producoes.put(letraA, ladoDireitoA);
+		
+		Set<VEstrela> ladoDireitoB = new HashSet<>();
+		ladoDireitoB.add(new VEstrela(b, letraB));
+		ladoDireitoB.add(new VEstrela(Simbolo.EPSILON));
+		
+		producoes.put(letraB, ladoDireitoB);
+		
+		Set<VEstrela> ladoDireitoC = new HashSet<>();
+		ladoDireitoC.add(new VEstrela(a, letraA));
+		ladoDireitoC.add(new VEstrela(letraB, letraC));
+		
+		producoes.put(letraC, ladoDireitoC);
+		
+		Set<VEstrela> ladoDireitoD = new HashSet<>();
+		ladoDireitoD.add(new VEstrela(d, letraD, d));
+		ladoDireitoD.add(new VEstrela(c));
+		
+		producoes.put(letraD, ladoDireitoD);
+		
+		Set<VEstrela> ladoDireitoE = new HashSet<>();
+		ladoDireitoE.add(new VEstrela(c));
+		ladoDireitoE.add(new VEstrela(letraE));
+		
+		producoes.put(letraE, ladoDireitoE);
+		
+		Gramatica gramatica = new Gramatica();
+		gramatica.setSimboloInicial(letraS);
+		gramatica.setSimbolosTerminais(simbolosTerminais);
+		gramatica.setSimbolosNaoTerminais(simbolosNaoTerminais);
+		gramatica.setProducoes(producoes);
+		
+		Gramatica semInfertil = GramaticaUtils.obterSemInferteis(gramatica);
+		Gramatica semInalcancaveis = GramaticaUtils.obterSemInalcancaveis(semInfertil);
+		
+		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
+		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+		
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		assertFalse(GramaticaUtils.estaFatorada(gramatica, first));
+		
+		int i = 0;
+	}
+	
+	@SuppressWarnings("unused")
+	@Test
+	public void verificarEpsilonLivreG1() {
+		Set<Simbolo> simbolosTerminais = new HashSet<>();
+		Simbolo a = new Simbolo("a", true);
+		simbolosTerminais.add(a);
+		Simbolo b = new Simbolo("b", true);
+		simbolosTerminais.add(b);
+		
+		Set<Simbolo> simbolosNaoTerminais = new HashSet<>();
+		Simbolo letraS = new Simbolo("S", false);
+		simbolosNaoTerminais.add(letraS);
+		Simbolo letraA = new Simbolo("A", false);
+		simbolosNaoTerminais.add(letraA);
+		Simbolo letraB = new Simbolo("B", false);
+		simbolosNaoTerminais.add(letraB);
+		
+		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		
+		
+		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		ladoDireitoS.add(new VEstrela(letraA, letraB));
+		
+		producoes.put(letraS, ladoDireitoS);
+		
+		Set<VEstrela> ladoDireitoA = new HashSet<>();
+		ladoDireitoA.add(new VEstrela(a, letraA));
+		ladoDireitoA.add(new VEstrela(Simbolo.EPSILON));
+		
+		producoes.put(letraA, ladoDireitoA);
+		
+		Set<VEstrela> ladoDireitoB = new HashSet<>();
+		ladoDireitoB.add(new VEstrela(b, letraB));
+		ladoDireitoB.add(new VEstrela(Simbolo.EPSILON));
+		
+		producoes.put(letraB, ladoDireitoB);
+		
+		Gramatica gramatica = new Gramatica();
+		gramatica.setSimboloInicial(letraS);
+		gramatica.setSimbolosTerminais(simbolosTerminais);
+		gramatica.setSimbolosNaoTerminais(simbolosNaoTerminais);
+		gramatica.setProducoes(producoes);
+		
+		Gramatica semEpsilon = GramaticaUtils.obterEpsilonLivre(gramatica);
+		
+		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
+		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+		
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		assertTrue(GramaticaUtils.estaFatorada(gramatica, first));
+		
+		int i = 0;
+	}
+	
+	@SuppressWarnings("unused")
+	@Test
+	public void verificarEpsilonLivreG2() {
+		Set<Simbolo> simbolosTerminais = new HashSet<>();
+		Simbolo a = new Simbolo("a", true);
+		simbolosTerminais.add(a);
+		Simbolo b = new Simbolo("b", true);
+		simbolosTerminais.add(b);
+		Simbolo c = new Simbolo("c", true);
+		simbolosTerminais.add(c);
+		
+		Set<Simbolo> simbolosNaoTerminais = new HashSet<>();
+		Simbolo letraS = new Simbolo("S", false);
+		simbolosNaoTerminais.add(letraS);
+		Simbolo letraA = new Simbolo("A", false);
+		simbolosNaoTerminais.add(letraA);
+		Simbolo letraB = new Simbolo("B", false);
+		simbolosNaoTerminais.add(letraB);
+		Simbolo letraC = new Simbolo("C", false);
+		simbolosNaoTerminais.add(letraC);
+		
+		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		
+		
+		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		ladoDireitoS.add(new VEstrela(c, letraS, c));
+		ladoDireitoS.add(new VEstrela(letraB, letraA));
+		
+		producoes.put(letraS, ladoDireitoS);
+		
+		Set<VEstrela> ladoDireitoA = new HashSet<>();
+		ladoDireitoA.add(new VEstrela(a, letraA));
+		ladoDireitoA.add(new VEstrela(letraA, letraB, letraC));
+		ladoDireitoA.add(new VEstrela(Simbolo.EPSILON));
+		
+		producoes.put(letraA, ladoDireitoA);
+		
+		Set<VEstrela> ladoDireitoB = new HashSet<>();
+		ladoDireitoB.add(new VEstrela(b, letraB));
+		ladoDireitoB.add(new VEstrela(letraC, letraA));
+		ladoDireitoB.add(new VEstrela(Simbolo.EPSILON));
+		
+		producoes.put(letraB, ladoDireitoB);
+		
+		Set<VEstrela> ladoDireitoC = new HashSet<>();
+		ladoDireitoC.add(new VEstrela(c, letraC, c));
+		ladoDireitoC.add(new VEstrela(letraA, letraS));
+		
+		producoes.put(letraC, ladoDireitoC);
+		
+		Gramatica gramatica = new Gramatica();
+		gramatica.setSimboloInicial(letraS);
+		gramatica.setSimbolosTerminais(simbolosTerminais);
+		gramatica.setSimbolosNaoTerminais(simbolosNaoTerminais);
+		gramatica.setProducoes(producoes);
+		
+		Gramatica semEpsilon = GramaticaUtils.obterEpsilonLivre(gramatica);
+		
+		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
+		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+		
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		assertFalse(GramaticaUtils.estaFatorada(gramatica, first));
+		
+		int i = 0;
+	}
+	
+	@SuppressWarnings("unused")
+	@Test
+	public void verificarprodSimplesG1() {
+		Set<Simbolo> simbolosTerminais = new HashSet<>();
+		Simbolo a = new Simbolo("a", true);
+		simbolosTerminais.add(a);
+		Simbolo b = new Simbolo("b", true);
+		simbolosTerminais.add(b);
+		Simbolo c = new Simbolo("c", true);
+		simbolosTerminais.add(c);
+		Simbolo d = new Simbolo("d", true);
+		simbolosTerminais.add(d);
+		
+		Set<Simbolo> simbolosNaoTerminais = new HashSet<>();
+		Simbolo letraS = new Simbolo("S", false);
+		simbolosNaoTerminais.add(letraS);
+		Simbolo letraF = new Simbolo("F", false);
+		simbolosNaoTerminais.add(letraF);
+		Simbolo letraG = new Simbolo("G", false);
+		simbolosNaoTerminais.add(letraG);
+		Simbolo letraH = new Simbolo("H", false);
+		simbolosNaoTerminais.add(letraH);
+		
+		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		
+		
+		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		ladoDireitoS.add(new VEstrela(letraF, letraG, letraH));
+		
+		producoes.put(letraS, ladoDireitoS);
+		
+		Set<VEstrela> ladoDireitoF = new HashSet<>();
+		ladoDireitoF.add(new VEstrela(a));
+		ladoDireitoF.add(new VEstrela(letraG));
+		
+		producoes.put(letraF, ladoDireitoF);
+		
+		Set<VEstrela> ladoDireitoG = new HashSet<>();
+		ladoDireitoG.add(new VEstrela(d, letraG));
+		ladoDireitoG.add(new VEstrela(letraH));
+		ladoDireitoG.add(new VEstrela(b));
+		
+		producoes.put(letraG, ladoDireitoG);
+		
+		Set<VEstrela> ladoDireitoH = new HashSet<>();
+		ladoDireitoH.add(new VEstrela(c));
+		
+		producoes.put(letraH, ladoDireitoH);
+		
+		Gramatica gramatica = new Gramatica();
+		gramatica.setSimboloInicial(letraS);
+		gramatica.setSimbolosTerminais(simbolosTerminais);
+		gramatica.setSimbolosNaoTerminais(simbolosNaoTerminais);
+		gramatica.setProducoes(producoes);
+		
+		Gramatica semCiclos = GramaticaUtils.obterSemCiclos(gramatica);
+		
+		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
+		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+		
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		assertTrue(GramaticaUtils.estaFatorada(gramatica, first));
+		
+		int i = 0;
+	}
+	
+	@SuppressWarnings("unused")
+	@Test
+	public void verificarprodSimplesG2() {
+		Set<Simbolo> simbolosTerminais = new HashSet<>();
+		Simbolo a = new Simbolo("a", true);
+		simbolosTerminais.add(a);
+		Simbolo b = new Simbolo("b", true);
+		simbolosTerminais.add(b);
+		Simbolo c = new Simbolo("c", true);
+		simbolosTerminais.add(c);
+		Simbolo d = new Simbolo("d", true);
+		simbolosTerminais.add(d);
+		
+		Set<Simbolo> simbolosNaoTerminais = new HashSet<>();
+		Simbolo letraS = new Simbolo("S", false);
+		simbolosNaoTerminais.add(letraS);
+		Simbolo letraF = new Simbolo("F", false);
+		simbolosNaoTerminais.add(letraF);
+		Simbolo letraG = new Simbolo("G", false);
+		simbolosNaoTerminais.add(letraG);
+		Simbolo letraH = new Simbolo("H", false);
+		simbolosNaoTerminais.add(letraH);
+		
+		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		
+		
+		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		ladoDireitoS.add(new VEstrela(a, letraS));
+		ladoDireitoS.add(new VEstrela(letraF));
+		
+		producoes.put(letraS, ladoDireitoS);
+		
+		Set<VEstrela> ladoDireitoF = new HashSet<>();
+		ladoDireitoF.add(new VEstrela(a));
+		ladoDireitoF.add(new VEstrela(letraG));
+		
+		producoes.put(letraF, ladoDireitoF);
+		
+		Set<VEstrela> ladoDireitoG = new HashSet<>();
+		ladoDireitoG.add(new VEstrela(letraH));
+		ladoDireitoG.add(new VEstrela(b));
+		
+		producoes.put(letraG, ladoDireitoG);
+		
+		Set<VEstrela> ladoDireitoH = new HashSet<>();
+		ladoDireitoH.add(new VEstrela(c));
+		ladoDireitoH.add(new VEstrela(letraS));
+		
+		producoes.put(letraH, ladoDireitoH);
+		
+		Gramatica gramatica = new Gramatica();
+		gramatica.setSimboloInicial(letraS);
+		gramatica.setSimbolosTerminais(simbolosTerminais);
+		gramatica.setSimbolosNaoTerminais(simbolosNaoTerminais);
+		gramatica.setProducoes(producoes);
+		
+		Gramatica semCiclos = GramaticaUtils.obterSemCiclos(gramatica);
+		
+		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
+		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+		
+		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		
+		int i = 0;
+	}
 }

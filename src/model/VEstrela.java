@@ -20,8 +20,16 @@ public class VEstrela {
 	}
 	
 	public VEstrela(VEstrela simbolos) {
-		this.inserirSimbolos(simbolos);
-		this.ORDEM = simbolos.ORDEM;
+		if (simbolos != null) {
+			this.inserirSimbolos(simbolos);
+			this.ORDEM = simbolos.ORDEM;
+		}
+	}
+	public VEstrela(VEstrela simbolos, boolean b) {
+		if (simbolos != null) {
+			this.adicionarSimbolos(simbolos);
+			this.ORDEM = simbolos.ORDEM;
+		}
 	}
 	
 	public VEstrela(int ordem) {
@@ -80,13 +88,26 @@ public class VEstrela {
 	public boolean inserirSimbolos(VEstrela simbolos) {
 		boolean novoSimboloInserido = false;
 		
-		for (Simbolo simbolo : simbolos.simbolos) {
-			if (!this.simbolos.contains(simbolo)) {
+		if (simbolos != null) {
+			for (Simbolo simbolo : simbolos.simbolos) {
+				if (!this.simbolos.contains(simbolo)) {
+					this.simbolos.add(simbolo);
+					novoSimboloInserido = true;
+				}
+			}
+		}
+		return novoSimboloInserido;
+	}
+	
+	public boolean adicionarSimbolos(VEstrela simbolos) {
+		boolean novoSimboloInserido = false;
+		
+		if (simbolos != null) {
+			for (Simbolo simbolo : simbolos.simbolos) {
 				this.simbolos.add(simbolo);
 				novoSimboloInserido = true;
 			}
 		}
-		
 		return novoSimboloInserido;
 	}
 	

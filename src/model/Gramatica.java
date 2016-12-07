@@ -12,6 +12,17 @@ public class Gramatica {
 	private Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
 	private Simbolo simboloInicial;
 	
+	public Gramatica() {
+		
+	}
+	
+	public Gramatica(Gramatica gramatica) {
+		this.simbolosTerminais.addAll(gramatica.simbolosTerminais);
+		this.simbolosNaoTerminais.addAll(gramatica.simbolosNaoTerminais);
+		this.producoes.putAll(gramatica.producoes);
+		this.simboloInicial = gramatica.simboloInicial;
+	}
+
 	public Set<Simbolo> getSimbolosTerminais() {
 		return simbolosTerminais;
 	}
