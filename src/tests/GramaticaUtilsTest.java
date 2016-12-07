@@ -15,10 +15,17 @@ import org.junit.Test;
 import model.Gramatica;
 import model.Simbolo;
 import model.VEstrela;
+import utils.GramaticaParser;
 import utils.GramaticaUtils;
 
 public class GramaticaUtilsTest {
 
+	@Test
+	public void dummy() {
+		
+	}
+	
+	@SuppressWarnings("unused")
 	@Test
 	public void verificarFirst() {
 		Set<Simbolo> simbolosTerminais = new HashSet<>();
@@ -195,7 +202,7 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		
-		assertTrue(GramaticaUtils.firstInterseccaoFollowVazia(first, follow));
+		assertFalse(GramaticaUtils.firstInterseccaoFollowVazia(first, follow));
 
 		
 		GramaticaUtils.estaFatorada(gramatica, first);
@@ -317,7 +324,7 @@ public class GramaticaUtilsTest {
 		
 		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		
-		assertFalse(GramaticaUtils.firstInterseccaoFollowVazia(first, follow));
+		assertTrue(GramaticaUtils.firstInterseccaoFollowVazia(first, follow));
 		
 		Map<Simbolo, List<VEstrela>> parser = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
 		ArrayList<Simbolo> sentenca = new ArrayList<>();
@@ -545,13 +552,16 @@ public class GramaticaUtilsTest {
 		gramatica.setSimbolosNaoTerminais(simbolosNaoTerminais);
 		gramatica.setProducoes(producoes);
 		
-		Gramatica semEpsilon = GramaticaUtils.obterEpsilonLivre(gramatica);
+		gramatica = GramaticaParser.textToGramatica("S => A B\nA => a A | &\nB => b B | &");
+		
+		Gramatica semEpsilon = GramaticaUtils.obterPropria(gramatica);
 		
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
 		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		assertTrue(GramaticaUtils.estaFatorada(gramatica, first));
+		
 		
 		int i = 0;
 	}
