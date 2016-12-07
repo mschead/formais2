@@ -146,14 +146,14 @@ public class Principal extends JFrame {
 		parsingButton.addActionListener(event -> {
 			String conteudoComponente = conteudoGramatica.getText();
 			Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
+			if (!GramaticaUtils.isGramaticaLL1(gramatica)) {
+				JOptionPane.showMessageDialog(null, "A gramática não é LL(1). Logo, Se a tabela for gerada estará inconsistente!");
+			}
 			Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 			Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 			Map<Simbolo, List<VEstrela>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
 
 			new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais())).adicionarBotao(gramatica);
-			if (!GramaticaUtils.isGramaticaLL1(gramatica)) {
-				JOptionPane.showMessageDialog(null, "A gramática não é LL(1). Logo, a tabela gerada estará inconsistente!");
-			}
 		});
 
 		toolbar1.add(newb);
