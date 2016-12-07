@@ -136,7 +136,7 @@ public class Principal extends JFrame {
         	if (GramaticaUtils.isGramaticaLL1(gramatica)) {
         		JOptionPane.showMessageDialog(null, "A gramática é LL(1).");
         	} else {
-        		JOptionPane.showMessageDialog(null, "Gramática não é LL(1).");
+        		JOptionPane.showMessageDialog(null, "A gramática não é LL(1).");
         	}
         });
         
@@ -146,13 +146,15 @@ public class Principal extends JFrame {
         	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
         	Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
         	Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
-        	Map<Simbolo, List<VEstrela>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
-
         	
-        	new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais()));        	
+        	if (GramaticaUtils.isGramaticaLL1(gramatica)) {
+        		Map<Simbolo, List<VEstrela>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
+        		new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais())).adicionarBotao(conteudoGramatica.getText());        	
+        	} else {
+        		JOptionPane.showMessageDialog(null, "A gramática não é LL(1).");
+        	}
+        	
         });
-        
-        JButton analise = new JButton("Fazer análise sintática");
         
         toolbar1.add(newb);
         toolbar1.add(openb);
@@ -164,7 +166,6 @@ public class Principal extends JFrame {
         toolbar2.add(firstNTButton);
         toolbar2.add(LL1Button);
         toolbar2.add(parsingButton);
-        toolbar2.add(analise);
         
         createLayout(toolbar1, toolbar2, panelGramatica);
     }
