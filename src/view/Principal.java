@@ -124,9 +124,9 @@ public class Principal extends JFrame {
         firstNTButton.addActionListener(event -> {
         	String conteudoComponente = conteudoGramatica.getText();
         	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
-        	Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
-        	Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
-        	new PainelGenerico(new TabelaModelFirstNT(firstNT));
+        	Map<Simbolo, VEstrela> firstTodaGramatica = GramaticaUtils.calcularFirst(gramatica);
+//        	Map<Simbolo, VEstrela> followTodaGramatica = GramaticaUtils.calcularFirstNT(gramatica, firstTodaGramatica);
+//        	new PainelGenerico(new TabelaModelFirstNT(followTodaGramatica));
         });
         
         
@@ -146,15 +146,13 @@ public class Principal extends JFrame {
         	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
         	Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
         	Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
+        	Map<Simbolo, List<VEstrela>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
+
         	
-        	if (GramaticaUtils.isGramaticaLL1(gramatica)) {
-        		Map<Simbolo, List<VEstrela>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
-        		new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais())).adicionarBotao(conteudoGramatica.getText());        	
-        	} else {
-        		JOptionPane.showMessageDialog(null, "A gramática não é LL(1).");
-        	}
-        	
+        	new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais()));        	
         });
+        
+        JButton analise = new JButton("Fazer análise sintática");
         
         toolbar1.add(newb);
         toolbar1.add(openb);
@@ -166,6 +164,7 @@ public class Principal extends JFrame {
         toolbar2.add(firstNTButton);
         toolbar2.add(LL1Button);
         toolbar2.add(parsingButton);
+        toolbar2.add(analise);
         
         createLayout(toolbar1, toolbar2, panelGramatica);
     }
