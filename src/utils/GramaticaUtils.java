@@ -204,6 +204,11 @@ public class GramaticaUtils {
 			for (Simbolo naoTerminal : gramatica.getSimbolosNaoTerminais()) {
 				Set<Simbolo> firstNTA = firstNT.get(naoTerminal);
 				Set<Simbolo> firstNTAAux = firstNTAux.get(naoTerminal);
+				for (Simbolo s : firstNTA) {
+					if (firstNTAAux.contains(s)) {
+						firstNTAAux.add(s);
+					}
+				}
 				firstNTAAux.addAll(firstNTA);
 			}
 			// para cada producaoA -> B, se o primeiro simbolo de B for um naoTerminal, adiciona o nao Terminal em firstNT(A)
@@ -220,7 +225,13 @@ public class GramaticaUtils {
 						if (!first.get(s).possuiEpsilon()) {
 							break;
 						}
-						firstNTA.addAll(firstNT.get(s));
+						for (Simbolo ladoEsq : firstNT.keySet()) {
+							for (Simbolo s2 : firstNT.get(ladoEsq)) {
+								if (firstNTA.contains(s2)) {
+									firstNTA.add(s2);
+								}
+							}
+						}
 						
 					}
 				}
@@ -249,7 +260,11 @@ public class GramaticaUtils {
 								}
 								break;
 							} else {
-								firstAtual.addAll(first.get(s).getSimbolos());
+								for (Simbolo sa : first.get(s).getSimbolos()) {
+									if (!firstAtual.contains(sa)) {
+										firstAtual.add(sa);
+									}
+								}
 							}
 							if (!first.get(s).possuiEpsilon()) {
 									break;
@@ -263,7 +278,11 @@ public class GramaticaUtils {
 								}
 								break;
 							} else {
-								firstComparada.addAll(first.get(s).getSimbolos());
+								for (Simbolo sa : first.get(s).getSimbolos()) {
+									if (!firstComparada.contains(sa)) {
+										firstComparada.add(sa);
+									}
+								}
 							}
 							if (!first.get(s).possuiEpsilon()) {
 									break;
@@ -319,7 +338,7 @@ public class GramaticaUtils {
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		boolean LL1 =  (!temRecursaoAEsquerda(gramatica, firstNT) &&
-						!estaFatorada(gramatica, first) &&
+						estaFatorada(gramatica, first) &&
 						firstInterseccaoFollowVazia(first, follow));
 		
 		return LL1;
@@ -427,7 +446,9 @@ public class GramaticaUtils {
 		Map<Simbolo, Set<Simbolo>> N = new HashMap<>();
 		Map<Simbolo, Set<Simbolo>> Nmenos1 = new HashMap<>();
 		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
-		
+		if (producoes == null || producoes.isEmpty() || producoes.keySet().isEmpty()) {
+			return gramatica;
+		}
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
 			Set<Simbolo> Na = new HashSet<>();
 			Set<Simbolo> NaMenos1 = new HashSet<>();
@@ -494,7 +515,11 @@ public class GramaticaUtils {
 		Set<Simbolo> NeMenos1 = new HashSet<>();
 		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		Map<Simbolo, Set<VEstrela>> novasProducoes = new HashMap<>();
-		
+
+		if (producoes == null || producoes.isEmpty() || producoes.keySet().isEmpty()) {
+			return gramatica;
+		}
+
 		// adicione em Ne todos os simbolos que derivam epsilon diretamente
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
 			for (VEstrela producao : producoes.get(ladoEsquerdo)) {
@@ -504,7 +529,7 @@ public class GramaticaUtils {
 				}
 			}
 		}
-		
+
 		// adiciona em Ne todos os simbolos que derivam epsilon indiretamente
 		do {
 			NeMenos1.addAll(Ne);
@@ -523,7 +548,7 @@ public class GramaticaUtils {
 				}
 			}
 		} while (!Ne.containsAll(NeMenos1) || !NeMenos1.containsAll(Ne));
-		
+
 		// adicionar em P' todas as producoes que nao derivam & diretamente
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
 			Set<VEstrela> ladoDireito = new HashSet<>();
@@ -534,26 +559,36 @@ public class GramaticaUtils {
 				}
 			}
 		}
-		
+
 		Map<Simbolo, List<VEstrela>> novasProducoesAux = new HashMap<>();
 		Map<Simbolo, List<VEstrela>> novasNovasProducoes = new HashMap<>();
-		
+
 		// para cada producao P, se P -> aAb e A -*> &, P -> ab
 		do {
-			novasProducoesAux.putAll(novasNovasProducoes);
+			if (!novasNovasProducoes.keySet().isEmpty()) {
+				for (Simbolo ladoEsquerdo : novasNovasProducoes.keySet()) {
+					List<VEstrela> ladoDireito = new ArrayList<>();
+					novasProducoesAux.put(ladoEsquerdo, ladoDireito);
+					for (VEstrela producao : novasNovasProducoes.get(ladoEsquerdo)) {
+						ladoDireito.add(producao);
+					}
+				}
+			}
 			for (Simbolo ladoEsquerdo : novasProducoes.keySet()) {
-				List<VEstrela> ladoDireito = novasNovasProducoes.get(ladoEsquerdo) ;
+				List<VEstrela> ladoDireito = novasNovasProducoes.get(ladoEsquerdo);
 				if (ladoDireito == null) {
 					ladoDireito = new ArrayList<>();
 					novasNovasProducoes.put(ladoEsquerdo, ladoDireito);
 				}
 				for (VEstrela producao : novasProducoes.get(ladoEsquerdo)) {
-					ladoDireito.add(producao);
+					if (!ladoDireito.contains(producao)) {
+						ladoDireito.add(producao);
+					}
 					for (Simbolo s : producao.getSimbolos()) {
 						if (Ne.contains(s)) {
 							VEstrela producaoNova = new VEstrela(producao, true);
 							producaoNova.getSimbolos().remove(s);
-							if (!producaoNova.getSimbolos().isEmpty()) {
+							if (!producaoNova.getSimbolos().isEmpty() && !ladoDireito.contains(producaoNova)) {
 								ladoDireito.add(producaoNova);
 							}
 						}
@@ -564,11 +599,22 @@ public class GramaticaUtils {
 				}
 			}
 		} while (!novasNovasProducoes.equals(novasProducoesAux));
+
+		if (Ne.contains(gramatica.getSimboloInicial())) {
+			Simbolo Slinha = new Simbolo("S\'", false);
+			glinha.getSimbolosNaoTerminais().add(Slinha);
+			List<VEstrela> ladoDireitoSlinha = new ArrayList<>();
+			ladoDireitoSlinha.add(new VEstrela(glinha.getSimboloInicial()));
+			ladoDireitoSlinha.add(new VEstrela(Simbolo.EPSILON));
+
+			novasNovasProducoes.put(Slinha, ladoDireitoSlinha);			
+		}
 		
 		glinha.setProducoes(novasNovasProducoes);
 		
 		return glinha;
 	}
+		
 
 	public static Gramatica obterSemSimbolosInuteis(Gramatica gramatica) {
 		Gramatica glinha = new Gramatica(gramatica);
@@ -584,6 +630,9 @@ public class GramaticaUtils {
 		Set<Simbolo> NiMenos1 = new HashSet<>();
 		Map<Simbolo, List<VEstrela>> producoes = glinha.getProducoes();
 		
+		if (producoes == null || producoes.isEmpty() || producoes.keySet().isEmpty()) {
+			return gramatica;
+		}
 		//descobre os simbolos ferteis (Ni)
 		do {
 			NiMenos1.addAll(Ni);
@@ -634,7 +683,9 @@ public class GramaticaUtils {
 				if (NiUVt.containsAll(producao.getSimbolos())) {
 					if (!novasNovasProducoes.containsKey(ladoEsquerdo)) {
 						List<VEstrela> ladoDireito = new ArrayList<>();
-						ladoDireito.add(producao);
+						if (ladoDireito.contains(producao)) {
+							ladoDireito.add(producao);
+						}
 						novasNovasProducoes.put(ladoEsquerdo, ladoDireito);
 					}
 					List<VEstrela> ladoDireito = novasNovasProducoes.get(ladoEsquerdo);
@@ -652,9 +703,14 @@ public class GramaticaUtils {
 	public static Gramatica obterSemInalcancaveis(Gramatica gramatica) {
 		Gramatica glinha = new Gramatica(gramatica);
 		Set<Simbolo> Vi = new HashSet<>();
+		Set<Simbolo> ViAux = new HashSet<>();
 		Vi.add(gramatica.getSimboloInicial());
 		Set<Simbolo> ViMenos1 = new HashSet<>();
 		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
+		
+		if (producoes == null || producoes.isEmpty() || producoes.keySet().isEmpty()) {
+			return gramatica;
+		}
 		
 		do {
 			ViMenos1.addAll(Vi);
@@ -662,11 +718,12 @@ public class GramaticaUtils {
 				for (VEstrela producao : producoes.get(ladoEsquerdo)) {
 					for (Simbolo s : producao.getSimbolos()) {
 						if (!s.isTerminal()) {
-							Vi.add(s);
+							ViAux.add(s);
 						}
 					}
 				}
 			}
+			Vi.addAll(ViAux);
 		} while (!Vi.containsAll(ViMenos1) || !ViMenos1.containsAll(Vi));
 		
 		glinha.setSimbolosNaoTerminais(Vi);
@@ -694,7 +751,8 @@ public class GramaticaUtils {
 	public static Gramatica obterPropria(Gramatica gramatica) {
 		Gramatica glinha = new Gramatica(gramatica);
 		glinha = obterSemCiclos(glinha);
-		glinha = obterSemSimbolosInuteis(glinha);
+		Gramatica glinha2 = new Gramatica(glinha);
+		glinha2 = obterSemSimbolosInuteis(glinha);
 		return glinha;
 	}
 	

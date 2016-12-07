@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -125,8 +126,8 @@ public class Principal extends JFrame {
         	String conteudoComponente = conteudoGramatica.getText();
         	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
         	Map<Simbolo, VEstrela> firstTodaGramatica = GramaticaUtils.calcularFirst(gramatica);
-//        	Map<Simbolo, VEstrela> followTodaGramatica = GramaticaUtils.calcularFirstNT(gramatica, firstTodaGramatica);
-//        	new PainelGenerico(new TabelaModelFirstNT(followTodaGramatica));
+        	Map<Simbolo, Set<Simbolo>> firstNTDaGramatica = GramaticaUtils.calcularFirstNT(gramatica, firstTodaGramatica);
+        	new PainelGenerico(new TabelaModelFirstNT(firstNTDaGramatica));
         });
         
         

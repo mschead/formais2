@@ -618,6 +618,9 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
 		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		
+		Gramatica g = GramaticaUtils.obterPropria(gramatica);
+		
 		assertFalse(GramaticaUtils.estaFatorada(gramatica, first));
 		
 		int i = 0;
