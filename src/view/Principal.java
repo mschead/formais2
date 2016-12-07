@@ -125,8 +125,8 @@ public class Principal extends JFrame {
         	String conteudoComponente = conteudoGramatica.getText();
         	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
         	Map<Simbolo, VEstrela> firstTodaGramatica = GramaticaUtils.calcularFirst(gramatica);
-        	Map<Simbolo, VEstrela> followTodaGramatica = GramaticaUtils.calcularFirstNT(gramatica, firstTodaGramatica);
-        	new PainelGenerico(new TabelaModelFirstNT(followTodaGramatica));
+//        	Map<Simbolo, VEstrela> followTodaGramatica = GramaticaUtils.calcularFirstNT(gramatica, firstTodaGramatica);
+//        	new PainelGenerico(new TabelaModelFirstNT(followTodaGramatica));
         });
         
         
@@ -149,7 +149,7 @@ public class Principal extends JFrame {
         	Map<Simbolo, List<VEstrela>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
 
         	
-        	new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais())).habilitarBotaoAnalise();        	
+        	new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais()));        	
         });
         
         JButton analise = new JButton("Fazer análise sintática");

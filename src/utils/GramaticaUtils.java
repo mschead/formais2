@@ -189,7 +189,7 @@ public class GramaticaUtils {
 	public static Map<Simbolo, Set<Simbolo>> calcularFirstNT(Gramatica gramatica, Map<Simbolo, VEstrela> first) {
 		Map<Simbolo, Set<Simbolo>> firstNT = new HashMap<>();
 		Map<Simbolo, Set<Simbolo>> firstNTAux = new HashMap<>();
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		
 		// prepara os firstNT e firstNT aux (para comparação iterativa)
 		for (Simbolo naoTerminal : gramatica.getSimbolosNaoTerminais()) {
@@ -231,10 +231,10 @@ public class GramaticaUtils {
 	}
 	
 		public static boolean estaFatorada(Gramatica gramatica, Map<Simbolo, VEstrela> first) {
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
-			Set<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
+			List<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
 			for (VEstrela producaoAtual : ladoDireito) {
 				Set<Simbolo> firstAtual = new HashSet<>();
 				for (VEstrela producaoComparada : ladoDireito) {
@@ -426,7 +426,7 @@ public class GramaticaUtils {
 		glinha = obterEpsilonLivre(glinha);
 		Map<Simbolo, Set<Simbolo>> N = new HashMap<>();
 		Map<Simbolo, Set<Simbolo>> Nmenos1 = new HashMap<>();
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
 			Set<Simbolo> Na = new HashSet<>();
@@ -462,14 +462,14 @@ public class GramaticaUtils {
 		} while (!N.equals(Nmenos1));
 		
 		// Preparar novas producoes
-		Map<Simbolo, Set<VEstrela>> novasProducoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> novasProducoes = new HashMap<>();
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
-			Set<VEstrela> ladoDireito = new HashSet<>();
+			List<VEstrela> ladoDireito = new ArrayList<>();
 			novasProducoes.put(ladoEsquerdo, ladoDireito);
 		}
 		
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
-			Set<VEstrela> novaProdA = novasProducoes.get(ladoEsquerdo);
+			List<VEstrela> novaProdA = novasProducoes.get(ladoEsquerdo);
 			for (Simbolo ladoEsquerdoNa : N.get(ladoEsquerdo)) {
 				for (VEstrela producaoNa : producoes.get(ladoEsquerdoNa)) {
 					if (producaoNa.getSimbolos().size() == 1) {
@@ -492,7 +492,7 @@ public class GramaticaUtils {
 		Gramatica glinha = new Gramatica(gramatica);
 		Set<Simbolo> Ne = new HashSet<>();
 		Set<Simbolo> NeMenos1 = new HashSet<>();
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		Map<Simbolo, Set<VEstrela>> novasProducoes = new HashMap<>();
 		
 		// adicione em Ne todos os simbolos que derivam epsilon diretamente
@@ -535,16 +535,16 @@ public class GramaticaUtils {
 			}
 		}
 		
-		Map<Simbolo, Set<VEstrela>> novasProducoesAux = new HashMap<>();
-		Map<Simbolo, Set<VEstrela>> novasNovasProducoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> novasProducoesAux = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> novasNovasProducoes = new HashMap<>();
 		
 		// para cada producao P, se P -> aAb e A -*> &, P -> ab
 		do {
 			novasProducoesAux.putAll(novasNovasProducoes);
 			for (Simbolo ladoEsquerdo : novasProducoes.keySet()) {
-				Set<VEstrela> ladoDireito = novasNovasProducoes.get(ladoEsquerdo) ;
+				List<VEstrela> ladoDireito = novasNovasProducoes.get(ladoEsquerdo) ;
 				if (ladoDireito == null) {
-					ladoDireito = new HashSet<>();
+					ladoDireito = new ArrayList<>();
 					novasNovasProducoes.put(ladoEsquerdo, ladoDireito);
 				}
 				for (VEstrela producao : novasProducoes.get(ladoEsquerdo)) {
@@ -582,7 +582,7 @@ public class GramaticaUtils {
 		int i = 0;
 		Set<Simbolo> Ni = new HashSet<>();
 		Set<Simbolo> NiMenos1 = new HashSet<>();
-		Map<Simbolo, Set<VEstrela>> producoes = glinha.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = glinha.getProducoes();
 		
 		//descobre os simbolos ferteis (Ni)
 		do {
@@ -615,13 +615,13 @@ public class GramaticaUtils {
 		naoFerteis.removeAll(Ni);
 		
 		//então remove as produçoes do lado esquerdo com esse simbolo
-		Map<Simbolo, Set<VEstrela>> novasProducoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> novasProducoes = new HashMap<>();
 		novasProducoes.putAll(producoes);
 		for (Simbolo naoFertil : naoFerteis) {
 			novasProducoes.remove(naoFertil);
 		}
 		
-		Map<Simbolo, Set<VEstrela>> novasNovasProducoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> novasNovasProducoes = new HashMap<>();
 		
 		Set<Simbolo> NiUVt = new HashSet<>();
 		NiUVt.addAll(Ni);
@@ -633,11 +633,11 @@ public class GramaticaUtils {
 			for (VEstrela producao : novasProducoes.get(ladoEsquerdo)) {
 				if (NiUVt.containsAll(producao.getSimbolos())) {
 					if (!novasNovasProducoes.containsKey(ladoEsquerdo)) {
-						Set<VEstrela> ladoDireito = new HashSet<>();
+						List<VEstrela> ladoDireito = new ArrayList<>();
 						ladoDireito.add(producao);
 						novasNovasProducoes.put(ladoEsquerdo, ladoDireito);
 					}
-					Set<VEstrela> ladoDireito = novasNovasProducoes.get(ladoEsquerdo);
+					List<VEstrela> ladoDireito = novasNovasProducoes.get(ladoEsquerdo);
 					ladoDireito.add(producao);
 				}
 				
@@ -654,7 +654,7 @@ public class GramaticaUtils {
 		Set<Simbolo> Vi = new HashSet<>();
 		Vi.add(gramatica.getSimboloInicial());
 		Set<Simbolo> ViMenos1 = new HashSet<>();
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		
 		do {
 			ViMenos1.addAll(Vi);
@@ -677,7 +677,7 @@ public class GramaticaUtils {
 		inalcancaveis.removeAll(Vi);
 		
 		//então remove as produçoes do lado esquerdo com esse simbolo
-		Map<Simbolo, Set<VEstrela>> novasProducoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> novasProducoes = new HashMap<>();
 		novasProducoes.putAll(producoes);
 		for (Simbolo inalcancavel : inalcancaveis) {
 			novasProducoes.remove(inalcancavel);

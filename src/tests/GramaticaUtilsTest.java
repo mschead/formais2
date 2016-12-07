@@ -1,7 +1,9 @@
 package tests;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,11 +12,10 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import model.AlfaNumero;
 import model.Gramatica;
-import model.GramaticaUtils;
 import model.Simbolo;
 import model.VEstrela;
+import utils.GramaticaUtils;
 
 public class GramaticaUtilsTest {
 
@@ -359,41 +360,41 @@ public class GramaticaUtilsTest {
 		Simbolo letraE = new Simbolo("E", false);
 		simbolosNaoTerminais.add(letraE);
 		
-		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> producoes = new HashMap<>();
 		
 		
-		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		List<VEstrela> ladoDireitoS = new ArrayList<>();
 		ladoDireitoS.add(new VEstrela(a, letraS));
 		ladoDireitoS.add(new VEstrela(letraB, letraC));
 		ladoDireitoS.add(new VEstrela(letraB, letraD));
 		
 		producoes.put(letraS, ladoDireitoS);
 		
-		Set<VEstrela> ladoDireitoA = new HashSet<>();
+		List<VEstrela> ladoDireitoA = new ArrayList<>();
 		ladoDireitoA.add(new VEstrela(c, letraC));
 		ladoDireitoA.add(new VEstrela(letraA, letraB));
 		
 		producoes.put(letraA, ladoDireitoA);
 		
-		Set<VEstrela> ladoDireitoB = new HashSet<>();
+		List<VEstrela> ladoDireitoB = new ArrayList<>();
 		ladoDireitoB.add(new VEstrela(b, letraB));
 		ladoDireitoB.add(new VEstrela(Simbolo.EPSILON));
 		
 		producoes.put(letraB, ladoDireitoB);
 		
-		Set<VEstrela> ladoDireitoC = new HashSet<>();
+		List<VEstrela> ladoDireitoC = new ArrayList<>();
 		ladoDireitoC.add(new VEstrela(a, letraA));
 		ladoDireitoC.add(new VEstrela(letraB, letraC));
 		
 		producoes.put(letraC, ladoDireitoC);
 		
-		Set<VEstrela> ladoDireitoD = new HashSet<>();
+		List<VEstrela> ladoDireitoD = new ArrayList<>();
 		ladoDireitoD.add(new VEstrela(d, letraD, d));
 		ladoDireitoD.add(new VEstrela(c));
 		
 		producoes.put(letraD, ladoDireitoD);
 		
-		Set<VEstrela> ladoDireitoE = new HashSet<>();
+		List<VEstrela> ladoDireitoE = new ArrayList<>();
 		ladoDireitoE.add(new VEstrela(c));
 		
 		producoes.put(letraE, ladoDireitoE);
@@ -443,41 +444,41 @@ public class GramaticaUtilsTest {
 		Simbolo letraE = new Simbolo("E", false);
 		simbolosNaoTerminais.add(letraE);
 		
-		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> producoes = new HashMap<>();
 		
 		
-		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		List<VEstrela> ladoDireitoS = new ArrayList<>();
 		ladoDireitoS.add(new VEstrela(a, letraS));
 		ladoDireitoS.add(new VEstrela(letraB, letraC));
 		ladoDireitoS.add(new VEstrela(letraB, letraD));
 		
 		producoes.put(letraS, ladoDireitoS);
 		
-		Set<VEstrela> ladoDireitoA = new HashSet<>();
+		List<VEstrela> ladoDireitoA = new ArrayList<>();
 		ladoDireitoA.add(new VEstrela(c, letraC));
 		ladoDireitoA.add(new VEstrela(letraA, letraB));
 		
 		producoes.put(letraA, ladoDireitoA);
 		
-		Set<VEstrela> ladoDireitoB = new HashSet<>();
+		List<VEstrela> ladoDireitoB = new ArrayList<>();
 		ladoDireitoB.add(new VEstrela(b, letraB));
 		ladoDireitoB.add(new VEstrela(Simbolo.EPSILON));
 		
 		producoes.put(letraB, ladoDireitoB);
 		
-		Set<VEstrela> ladoDireitoC = new HashSet<>();
+		List<VEstrela> ladoDireitoC = new ArrayList<>();
 		ladoDireitoC.add(new VEstrela(a, letraA));
 		ladoDireitoC.add(new VEstrela(letraB, letraC));
 		
 		producoes.put(letraC, ladoDireitoC);
 		
-		Set<VEstrela> ladoDireitoD = new HashSet<>();
+		List<VEstrela> ladoDireitoD = new ArrayList<>();
 		ladoDireitoD.add(new VEstrela(d, letraD, d));
 		ladoDireitoD.add(new VEstrela(c));
 		
 		producoes.put(letraD, ladoDireitoD);
 		
-		Set<VEstrela> ladoDireitoE = new HashSet<>();
+		List<VEstrela> ladoDireitoE = new ArrayList<>();
 		ladoDireitoE.add(new VEstrela(c));
 		ladoDireitoE.add(new VEstrela(letraE));
 		
@@ -518,21 +519,21 @@ public class GramaticaUtilsTest {
 		Simbolo letraB = new Simbolo("B", false);
 		simbolosNaoTerminais.add(letraB);
 		
-		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> producoes = new HashMap<>();
 		
 		
-		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		List<VEstrela> ladoDireitoS = new ArrayList<>();
 		ladoDireitoS.add(new VEstrela(letraA, letraB));
 		
 		producoes.put(letraS, ladoDireitoS);
 		
-		Set<VEstrela> ladoDireitoA = new HashSet<>();
+		List<VEstrela> ladoDireitoA = new ArrayList<>();
 		ladoDireitoA.add(new VEstrela(a, letraA));
 		ladoDireitoA.add(new VEstrela(Simbolo.EPSILON));
 		
 		producoes.put(letraA, ladoDireitoA);
 		
-		Set<VEstrela> ladoDireitoB = new HashSet<>();
+		List<VEstrela> ladoDireitoB = new ArrayList<>();
 		ladoDireitoB.add(new VEstrela(b, letraB));
 		ladoDireitoB.add(new VEstrela(Simbolo.EPSILON));
 		
@@ -576,30 +577,30 @@ public class GramaticaUtilsTest {
 		Simbolo letraC = new Simbolo("C", false);
 		simbolosNaoTerminais.add(letraC);
 		
-		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> producoes = new HashMap<>();
 		
 		
-		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		List<VEstrela> ladoDireitoS = new ArrayList<>();
 		ladoDireitoS.add(new VEstrela(c, letraS, c));
 		ladoDireitoS.add(new VEstrela(letraB, letraA));
 		
 		producoes.put(letraS, ladoDireitoS);
 		
-		Set<VEstrela> ladoDireitoA = new HashSet<>();
+		List<VEstrela> ladoDireitoA = new ArrayList<>();
 		ladoDireitoA.add(new VEstrela(a, letraA));
 		ladoDireitoA.add(new VEstrela(letraA, letraB, letraC));
 		ladoDireitoA.add(new VEstrela(Simbolo.EPSILON));
 		
 		producoes.put(letraA, ladoDireitoA);
 		
-		Set<VEstrela> ladoDireitoB = new HashSet<>();
+		List<VEstrela> ladoDireitoB = new ArrayList<>();
 		ladoDireitoB.add(new VEstrela(b, letraB));
 		ladoDireitoB.add(new VEstrela(letraC, letraA));
 		ladoDireitoB.add(new VEstrela(Simbolo.EPSILON));
 		
 		producoes.put(letraB, ladoDireitoB);
 		
-		Set<VEstrela> ladoDireitoC = new HashSet<>();
+		List<VEstrela> ladoDireitoC = new ArrayList<>();
 		ladoDireitoC.add(new VEstrela(c, letraC, c));
 		ladoDireitoC.add(new VEstrela(letraA, letraS));
 		
@@ -645,28 +646,28 @@ public class GramaticaUtilsTest {
 		Simbolo letraH = new Simbolo("H", false);
 		simbolosNaoTerminais.add(letraH);
 		
-		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> producoes = new HashMap<>();
 		
 		
-		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		List<VEstrela> ladoDireitoS = new ArrayList<>();
 		ladoDireitoS.add(new VEstrela(letraF, letraG, letraH));
 		
 		producoes.put(letraS, ladoDireitoS);
 		
-		Set<VEstrela> ladoDireitoF = new HashSet<>();
+		List<VEstrela> ladoDireitoF = new ArrayList<>();
 		ladoDireitoF.add(new VEstrela(a));
 		ladoDireitoF.add(new VEstrela(letraG));
 		
 		producoes.put(letraF, ladoDireitoF);
 		
-		Set<VEstrela> ladoDireitoG = new HashSet<>();
+		List<VEstrela> ladoDireitoG = new ArrayList<>();
 		ladoDireitoG.add(new VEstrela(d, letraG));
 		ladoDireitoG.add(new VEstrela(letraH));
 		ladoDireitoG.add(new VEstrela(b));
 		
 		producoes.put(letraG, ladoDireitoG);
 		
-		Set<VEstrela> ladoDireitoH = new HashSet<>();
+		List<VEstrela> ladoDireitoH = new ArrayList<>();
 		ladoDireitoH.add(new VEstrela(c));
 		
 		producoes.put(letraH, ladoDireitoH);
@@ -711,28 +712,28 @@ public class GramaticaUtilsTest {
 		Simbolo letraH = new Simbolo("H", false);
 		simbolosNaoTerminais.add(letraH);
 		
-		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> producoes = new HashMap<>();
 		
 		
-		Set<VEstrela> ladoDireitoS = new HashSet<>();
+		List<VEstrela> ladoDireitoS = new ArrayList<>();
 		ladoDireitoS.add(new VEstrela(a, letraS));
 		ladoDireitoS.add(new VEstrela(letraF));
 		
 		producoes.put(letraS, ladoDireitoS);
 		
-		Set<VEstrela> ladoDireitoF = new HashSet<>();
+		List<VEstrela> ladoDireitoF = new ArrayList<>();
 		ladoDireitoF.add(new VEstrela(a));
 		ladoDireitoF.add(new VEstrela(letraG));
 		
 		producoes.put(letraF, ladoDireitoF);
 		
-		Set<VEstrela> ladoDireitoG = new HashSet<>();
+		List<VEstrela> ladoDireitoG = new ArrayList<>();
 		ladoDireitoG.add(new VEstrela(letraH));
 		ladoDireitoG.add(new VEstrela(b));
 		
 		producoes.put(letraG, ladoDireitoG);
 		
-		Set<VEstrela> ladoDireitoH = new HashSet<>();
+		List<VEstrela> ladoDireitoH = new ArrayList<>();
 		ladoDireitoH.add(new VEstrela(c));
 		ladoDireitoH.add(new VEstrela(letraS));
 		
