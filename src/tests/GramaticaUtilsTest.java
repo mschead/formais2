@@ -83,7 +83,7 @@ public class GramaticaUtilsTest {
 		
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
-		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		
 		Map<Simbolo, List<VEstrela>> parser = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
 		ArrayList<Simbolo> sentenca = new ArrayList<>();
@@ -193,7 +193,7 @@ public class GramaticaUtilsTest {
 		
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
-		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		
 		assertTrue(GramaticaUtils.firstInterseccaoFollowVazia(first, follow));
 
@@ -315,7 +315,7 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
-		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		
 		assertFalse(GramaticaUtils.firstInterseccaoFollowVazia(first, follow));
 		
@@ -411,7 +411,7 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
-		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		assertFalse(GramaticaUtils.estaFatorada(gramatica, first));
 		
 		int i = 0;
@@ -496,7 +496,7 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
-		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		assertFalse(GramaticaUtils.estaFatorada(gramatica, first));
 		
 		int i = 0;
@@ -550,7 +550,7 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
-		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		assertTrue(GramaticaUtils.estaFatorada(gramatica, first));
 		
 		int i = 0;
@@ -617,7 +617,7 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
-		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		assertFalse(GramaticaUtils.estaFatorada(gramatica, first));
 		
 		int i = 0;
@@ -683,7 +683,7 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
-		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		assertTrue(GramaticaUtils.estaFatorada(gramatica, first));
 		
 		int i = 0;
@@ -750,7 +750,7 @@ public class GramaticaUtilsTest {
 		Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 		Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 		
-		Map<Simbolo, Set<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+		Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
 		
 		int i = 0;
 	}

@@ -124,9 +124,9 @@ public class Principal extends JFrame {
         firstNTButton.addActionListener(event -> {
         	String conteudoComponente = conteudoGramatica.getText();
         	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
-        	Map<Simbolo, VEstrela> firstTodaGramatica = GramaticaUtils.calcularFirst(gramatica);
-//        	Map<Simbolo, VEstrela> followTodaGramatica = GramaticaUtils.calcularFirstNT(gramatica, firstTodaGramatica);
-//        	new PainelGenerico(new TabelaModelFirstNT(followTodaGramatica));
+        	Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
+        	Map<Simbolo, List<Simbolo>> firstNT = GramaticaUtils.calcularFirstNT(gramatica, first);
+        	new PainelGenerico(new TabelaModelFirstNT(firstNT));
         });
         
         
