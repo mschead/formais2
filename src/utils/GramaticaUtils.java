@@ -610,7 +610,7 @@ public class GramaticaUtils {
 		} while (!novasNovasProducoes.equals(novasProducoesAux));
 
 		if (Ne.contains(gramatica.getSimboloInicial())) {
-			Simbolo Slinha = new Simbolo("S\'", false);
+			Simbolo Slinha = new Simbolo(glinha.getSimboloInicial() + "\'", false);
 			glinha.getSimbolosNaoTerminais().add(Slinha);
 			List<VEstrela> ladoDireitoSlinha = new ArrayList<>();
 			ladoDireitoSlinha.add(new VEstrela(glinha.getSimboloInicial()));
