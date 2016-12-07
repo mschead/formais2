@@ -40,9 +40,9 @@ public class GramaticaParser {
 					}
 				}
 
-				if (index == 1 && !simbolo.equals("->")) {
-					// throw new GramaticaParserErrorException();
-				}
+				// if (index == 1 && !simbolo.equals("->")) {
+				// // throw new GramaticaParserErrorException();
+				// }
 
 				if (index > 1) {
 					if (!simbolo.equals("|")) {
