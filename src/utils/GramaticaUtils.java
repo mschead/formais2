@@ -610,15 +610,15 @@ public class GramaticaUtils {
 		} while (!novasNovasProducoes.equals(novasProducoesAux));
 
 		if (Ne.contains(gramatica.getSimboloInicial())) {
-			Simbolo Slinha = new Simbolo("S\'", false);
+			Simbolo Slinha = new Simbolo(glinha.getSimboloInicial() + "\'", false);
 			glinha.getSimbolosNaoTerminais().add(Slinha);
 			List<VEstrela> ladoDireitoSlinha = new ArrayList<>();
 			ladoDireitoSlinha.add(new VEstrela(glinha.getSimboloInicial()));
 			ladoDireitoSlinha.add(new VEstrela(Simbolo.EPSILON));
 
+			glinha.setSimboloInicial(Slinha);
 			novasNovasProducoes.put(Slinha, ladoDireitoSlinha);			
 		}
-		
 		glinha.setProducoes(novasNovasProducoes);
 		
 		return glinha;
@@ -723,10 +723,12 @@ public class GramaticaUtils {
 		do {
 			ViMenos1.addAll(Vi);
 			for (Simbolo ladoEsquerdo : Vi) {
-				for (VEstrela producao : producoes.get(ladoEsquerdo)) {
-					for (Simbolo s : producao.getSimbolos()) {
-						if (!s.isTerminal()) {
-							ViAux.add(s);
+				if (producoes.get(ladoEsquerdo) != null) {
+					for (VEstrela producao : producoes.get(ladoEsquerdo)) {
+						for (Simbolo s : producao.getSimbolos()) {
+							if (!s.isTerminal()) {
+								ViAux.add(s);
+							}
 						}
 					}
 				}
