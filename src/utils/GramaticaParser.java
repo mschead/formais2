@@ -19,14 +19,14 @@ public class GramaticaParser {
 		Gramatica gramaticaModelo = new Gramatica();
 		Set<Simbolo> simbolosTerminais = new HashSet<>();
 		Set<Simbolo> simbolosNaoTerminais = new HashSet<>();
-		Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
-		
+		Map<Simbolo, List<VEstrela>> producoes = new HashMap<>();
+		int PRODUCAO = 1;
 		
 		boolean inicialAdicionado = false;
 		List<String> linhas = Arrays.asList(gramatica.split("\n"));
 		for (String alfa : linhas) {
 			List<Simbolo> simbolosObtidos = new ArrayList<>();
-			Set<VEstrela> ladoDireito = new HashSet<>();
+			List<VEstrela> ladoDireito = new ArrayList<>();
 			Simbolo naoTerminal = null;
 			
 			List<String> simbolos = Arrays.asList(alfa.split(" "));
@@ -56,12 +56,12 @@ public class GramaticaParser {
 							simbolosObtidos.add(Simbolo.EPSILON);
 						}
 					} else {
-						ladoDireito.add(new VEstrela(simbolosObtidos));
+						ladoDireito.add(new VEstrela(PRODUCAO++, simbolosObtidos));
 						simbolosObtidos = new ArrayList<>();
 					}
 					
 					if (index == simbolos.size() - 1) {
-						ladoDireito.add(new VEstrela(simbolosObtidos));
+						ladoDireito.add(new VEstrela(PRODUCAO++, simbolosObtidos));
 						producoes.put(naoTerminal, ladoDireito);
 					}
 				}  
@@ -77,7 +77,7 @@ public class GramaticaParser {
 	
 	public static String gramaticaToText(Gramatica gramatica) {
 		StringBuilder g = new StringBuilder();
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
 			List<VEstrela> ladoDireito = new ArrayList<>(producoes.get(ladoEsquerdo));

@@ -2,6 +2,7 @@ package model;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ public class Gramatica {
 
 	private Set<Simbolo> simbolosTerminais = new HashSet<>();
 	private Set<Simbolo> simbolosNaoTerminais = new HashSet<>();
-	private Map<Simbolo, Set<VEstrela>> producoes = new HashMap<>();
+	private Map<Simbolo, List<VEstrela>> producoes = new HashMap<>();
 	private Simbolo simboloInicial;
 	
 	public Set<Simbolo> getSimbolosTerminais() {
@@ -28,7 +29,7 @@ public class Gramatica {
 		this.simbolosNaoTerminais = simbolosNaoTerminais;
 	}
 	
-	public Map<Simbolo, Set<VEstrela>> getProducoes() {
+	public Map<Simbolo, List<VEstrela>> getProducoes() {
 		return producoes;
 	}
 	
@@ -42,7 +43,7 @@ public class Gramatica {
 		throw new LadoSemOrdemException();
 	}
 	
-	public void setProducoes(Map<Simbolo, Set<VEstrela>> producoes) {
+	public void setProducoes(Map<Simbolo, List<VEstrela>> producoes) {
 		this.producoes = producoes;
 	}
 	

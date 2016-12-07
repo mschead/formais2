@@ -13,10 +13,22 @@ public class VEstrela {
 		this.simbolos = new ArrayList<>(simbolos); 
 	}
 	
+	public VEstrela(int numeroProducao, List<Simbolo> simbolos) {
+		this.simbolos = new ArrayList<>(simbolos); 
+		this.ORDEM = numeroProducao;
+	}
+	
 	public VEstrela(Simbolo...simbolos) {
 		for (Simbolo simbolo : simbolos) {
 			this.simbolos.add(simbolo);
 		}
+	}
+	
+	public VEstrela(int numeroProducao, Simbolo...simbolos) {
+		for (Simbolo simbolo : simbolos) {
+			this.simbolos.add(simbolo);
+		}
+		this.ORDEM = numeroProducao;
 	}
 	
 	public VEstrela(VEstrela simbolos) {

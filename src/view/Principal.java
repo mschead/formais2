@@ -20,11 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
-import model.AlfaNumero;
 import model.Gramatica;
 import model.Simbolo;
 import model.VEstrela;
@@ -150,10 +146,10 @@ public class Principal extends JFrame {
         	Gramatica gramatica = GramaticaParser.textToGramatica(conteudoComponente);
         	Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
         	Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
-        	Map<Simbolo, List<AlfaNumero>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
+        	Map<Simbolo, List<VEstrela>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
 
         	
-        	new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais()));        	
+        	new PainelGenerico(new TabelaModelParsing(parsing, gramatica.getSimbolosTerminais())).habilitarBotaoAnalise();        	
         });
         
         JButton analise = new JButton("Fazer análise sintática");

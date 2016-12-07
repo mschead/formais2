@@ -1,17 +1,10 @@
 package view;
 
-import java.util.Map;
-
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-
-import model.Simbolo;
-import model.VEstrela;
 
 public class PainelGenerico extends JFrame {
 
@@ -37,6 +30,11 @@ public class PainelGenerico extends JFrame {
         
 	}
 	
+	
+	public void habilitarBotaoAnalise() {
+		JButton analisar = new JButton("Analisar sentença");
+		getContentPane().add(analisar);
+	}
 	
 	
 	

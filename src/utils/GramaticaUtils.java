@@ -22,13 +22,13 @@ public class GramaticaUtils {
 			first.put(simbolo, new VEstrela(simbolo));
 		
 		
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		
 		// pegar cada produção de um não terminal, e obter os first do lado direito (regra 2)
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
-			Set<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
+			List<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
 			for (VEstrela simbolos : ladoDireito) {
-				simbolos.definirOrdem(); // aproveita o loop para determinar a ordem das produções, para construir a tabela de parsing.
+//				simbolos.definirOrdem(); // aproveita o loop para determinar a ordem das produções, para construir a tabela de parsing.
 				if (simbolos.primeiroSimboloTerminal() || simbolos.primeiroSimboloEpsilon()) {
 					VEstrela firstAtual = first.get(ladoEsquerdo);
 					if (firstAtual != null) {
@@ -39,14 +39,14 @@ public class GramaticaUtils {
 				}
 			}
 		}
-		VEstrela.zerarContador();
+//		VEstrela.zerarContador();
 		
 		// gerar os first das produções cujo lado direito comecem por um não terminal (regra 3)
 		boolean firstModificado = true;
 		while (firstModificado) {
 			firstModificado = false;
 			for (Simbolo ladoEsquerdo : producoes.keySet()) {
-				Set<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
+				List<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
 				for (VEstrela simbolos : ladoDireito) {
 					if (!simbolos.primeiroSimboloTerminal()) {
 						int index = 0;
@@ -109,9 +109,9 @@ public class GramaticaUtils {
 		follow.put(gramatica.getSimboloInicial(), new VEstrela(Simbolo.DOLAR));
 		
 		// Seja aBC, adiciona o first de C no follow de B para todos os lados direitos de todas as produções.
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
-			Set<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
+			List<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
 			for (VEstrela simbolos : ladoDireito) {
 				for (int indexI = 0; indexI < simbolos.getSimbolos().size(); indexI++) { 
 					Simbolo naoTerminal = simbolos.getSimbolos().get(indexI);
@@ -147,7 +147,7 @@ public class GramaticaUtils {
 		while (modificado) {
 			modificado = false;
 			for (Simbolo ladoEsquerdo : producoes.keySet()) {
-				Set<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
+				List<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
 				VEstrela followLadoEsquerdo = follow.get(ladoEsquerdo);
 				if (followLadoEsquerdo != null) {
 					for (VEstrela simbolos : ladoDireito) {
@@ -187,11 +187,11 @@ public class GramaticaUtils {
 	
 	// conjunto de símbolos de Vn que podem iniciar sequências derivadas de A
 	public static Map<Simbolo, VEstrela> calcularFirstNT(Gramatica gramatica, Map<Simbolo, VEstrela> first) {
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		Set<Simbolo> firstNT = new HashSet<>();
 		
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
-			Set<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
+			List<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
 			for (VEstrela simbolos : ladoDireito) {
 				for (Simbolo simbolo : simbolos.getSimbolos()) {
 					if (!simbolo.isTerminal() && simbolo.equals(ladoEsquerdo)) {
@@ -209,10 +209,10 @@ public class GramaticaUtils {
 	
 	public static boolean verificarFatoracao(Gramatica gramatica, Map<Simbolo, VEstrela> first) {
 		Map<Simbolo, List<AlfaNumero>> firstPorAlfa = new HashMap<>();
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
-			Set<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
+			List<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
 			List<AlfaNumero> alfaNumeroLista = new ArrayList<>();
 			firstPorAlfa.put(ladoEsquerdo, alfaNumeroLista);
 			
@@ -268,13 +268,13 @@ public class GramaticaUtils {
 		return false;
 	}
 	
-	public static Map<Simbolo, List<AlfaNumero>> construirTabelaParsing(Gramatica gramatica, Map<Simbolo, VEstrela> first, Map<Simbolo, VEstrela> follow) {
-		Map<Simbolo, List<AlfaNumero>> estruturaParser = new HashMap<>();
-		Map<Simbolo, Set<VEstrela>> producoes = gramatica.getProducoes();
+	public static Map<Simbolo, List<VEstrela>> construirTabelaParsing(Gramatica gramatica, Map<Simbolo, VEstrela> first, Map<Simbolo, VEstrela> follow) {
+		Map<Simbolo, List<VEstrela>> estruturaParser = new HashMap<>();
+		Map<Simbolo, List<VEstrela>> producoes = gramatica.getProducoes();
 		
 		for (Simbolo ladoEsquerdo : producoes.keySet()) {
-			Set<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
-			List<AlfaNumero> alfaNumeroLista = new ArrayList<>();
+			List<VEstrela> ladoDireito = producoes.get(ladoEsquerdo);
+			List<VEstrela> alfaNumeroLista = new ArrayList<>();
 			estruturaParser.put(ladoEsquerdo, alfaNumeroLista);
 			
 			for (VEstrela simbolos : ladoDireito) {
@@ -311,8 +311,8 @@ public class GramaticaUtils {
 					}
 					
 				}
-				List<AlfaNumero> lista = estruturaParser.get(ladoEsquerdo);
-				lista.add(new AlfaNumero(firstAlfa, simbolos.obterOrdem()));
+				List<VEstrela> lista = estruturaParser.get(ladoEsquerdo);
+				lista.add(firstAlfa);
 			}
 		}
 				

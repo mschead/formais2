@@ -1,7 +1,5 @@
 package model;
 
-import java.util.List;
-
 public class AlfaNumero {
 
 	private VEstrela alfa;
