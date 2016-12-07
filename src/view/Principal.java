@@ -101,10 +101,6 @@ public class Principal extends JFrame {
         	Gramatica gramaticaPropria = GramaticaUtils.obterPropria(gramatica);
         	String gramaticaText = GramaticaParser.gramaticaToText(gramaticaPropria);
         	conteudoGramatica.setText(gramaticaText);
-        	System.out.println(gramatica);
-        	System.out.println(gramaticaPropria);
-        	
-        	System.out.println(gramaticaText);
         	JOptionPane.showMessageDialog(null, "Gramática própria gerada com sucesso.");
         });
         
