@@ -18,7 +18,6 @@ import javax.swing.table.DefaultTableModel;
 import model.Gramatica;
 import model.Simbolo;
 import model.VEstrela;
-import utils.GramaticaParser;
 import utils.GramaticaUtils;
 
 public class PainelGenerico extends JFrame {
@@ -27,9 +26,9 @@ public class PainelGenerico extends JFrame {
 	private JScrollPane scrollPane;
 
 	public PainelGenerico(DefaultTableModel model) {
-		tabela = new JTable(model);
-		scrollPane = new JScrollPane(tabela);
-		iniciar();
+		this.tabela = new JTable(model);
+		this.scrollPane = new JScrollPane(this.tabela);
+		this.iniciar();
 	}
 
 	public void iniciar() {
@@ -42,41 +41,40 @@ public class PainelGenerico extends JFrame {
 
 		JPanel tabelaPane = new JPanel();
 		tabelaPane.setLayout(new BoxLayout(tabelaPane, BoxLayout.Y_AXIS));
-		tabelaPane.add(scrollPane);
+		tabelaPane.add(this.scrollPane);
 
-		getContentPane().add(scrollPane, BorderLayout.CENTER);
+		this.getContentPane().add(this.scrollPane, BorderLayout.CENTER);
 	}
 
-	public void adicionarBotao(String textGramatica) {
+	public void adicionarBotao(Gramatica gramatica) {
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.Y_AXIS));
 		JButton reconhecer = new JButton("Fazer análise");
 		reconhecer.addActionListener(event -> {
 			String sentencaDigitada = JOptionPane.showInputDialog(this, "Digite a sentença, com os simbolos separados por espaço: ");
 			if (!sentencaDigitada.equals("")) {
-				Gramatica gramatica = GramaticaParser.textToGramatica(textGramatica);
 				Map<Simbolo, VEstrela> first = GramaticaUtils.calcularFirst(gramatica);
 				Map<Simbolo, VEstrela> follow = GramaticaUtils.calcularFollow(gramatica, first);
 				Map<Simbolo, List<VEstrela>> parsing = GramaticaUtils.construirTabelaParsing(gramatica, first, follow);
-				
+
 				List<String> sentencaDividida = new ArrayList<>(Arrays.asList(sentencaDigitada.split(" ")));
 				List<Simbolo> sentenca = new ArrayList<>();
-				
+
 				for (String letra : sentencaDividida) {
 					sentenca.add(new Simbolo(letra, true));
 				}
-				
+
 				if (GramaticaUtils.reconheceSentenca(gramatica, parsing, sentenca)) {
 					JOptionPane.showMessageDialog(null, "A sentença digitada é gerada pela gramática.");
 				} else {
 					JOptionPane.showMessageDialog(null, "A sentença digitada não é gerada pela gramática.");
 				}
-				
+
 			}
 		});
 		buttonPane.add(reconhecer);
 
-		getContentPane().add(buttonPane, BorderLayout.PAGE_END);
+		this.getContentPane().add(buttonPane, BorderLayout.PAGE_END);
 	}
 
 }
