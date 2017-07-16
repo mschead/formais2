@@ -1,0 +1,53 @@
+* Se linguagem regular, complemento também, união também, concatenação também
+* Não determinismo não aumenta poder de expressividade para classe de linguagem regulares
+
+* Para determinizar, pegar o estado inicial e derivar os outros a partir dele.
+- Os estados são finais aqueles que possuem um dos estados finais do nao deterministico
+
+* Para minimizar: (deve estar determinizado)
+- verificar estados alcancaveis (do estado inicial, quais eu chego?)
+- verificar estados vivos (dos estados finais, a partir de quais estados posso chegar neles?)
+- se precisar, criar estado fi (erro)
+- criar classe K - F e F
+- para cada par de estado, verificar se ambos vão para a mesma classe para cada letra do alfabeto
+- quando acabar, as classes são os novos estados.
+
+* a? = (a | &)
+* transformar ER para AF
+- método thompson: usar transições epsilon para ir juntando máquinas triviais
+- di simone:
+  - transformar ER em uma arvore binária: criar as costuras seguindo percurso preordem (costura primeiro a subarvore da esquerda e depois da direita, começando sempre pelas folhas) - só quem tem um filho possui costura!
+	- determinar os nodos alcançáveis a partir de cada folha
+	- derivar os proximos estados a partir da raiz
+
+    x      z
+q0 --> q1 --> q2  
+	   /\        
+	   || y 
+		
+
+
+
+* Existe um n (usar k na palavra w), para todo w que pertence a linguagem, existe um y, para todo (x y^i z) pertencente a linguagem
+ - n assume valores de 0 até k! (ex: y, yy, ... y^k) 	
+
+
+bombeamento de forma gráfica (poderia ser ciclo com mais de um estado)
+
+* calcular complemento:
+ - determinizá-lo, completá-lo, inverter estados finais
+
+* L1 e L2 = (L1' ou L2')'
+* L1 C L2 <=> L1 e L2' = fi
+* L1 - L2 = L1 e L2'
+* Fazer desenho de L1 contido em L2 pra facilitar visualização
+* Usado para provar formalmente que duas linguagens são iguais
+
+
+
+
+
+
+
+
+

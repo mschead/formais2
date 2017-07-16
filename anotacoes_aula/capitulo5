@@ -1,0 +1,135 @@
+* Descendente - Começa do símbolo inicial da gramática.
+
+	S				  ||
+ / \        ||
+/   \       \/
+--x--   (DERIVAÇÃO)  
+
+
+* Ascendente - Começa da sentença a ser reconhecida.
+
+	S				  /\
+ / \        ||
+/   \       ||
+--x--    (REDUÇÃO)
+
+
+* não-deterministico => + expressivo, qualquer GLC; tempo analise pode ser exponencial
+* LR1 canônica => mais abrangente de todas para análise determinística
+* LR > LALR > SLR (espaço) - trade-off entre tempo e abrangencia
+* Se LL(1), então com certeza não ambigua
+
+* força bruta (backin-track) => n maneiras!
+* descendente recursiva (não possui RE, está fatorada, e não possui intersecção de first(A) com follow(A))
+ - fazer os métodos pra cada um (caso tenha AB, verificar se x pertence ao first de AB)
+
+
+* Exemplo de análise usando LL(1)
+
+* [número produção] E$
+* calcular os FIRST e FOLLOW
+
+
+* Analisadores ascendentes
+
+* shift reduce
+
+ababa$
+
+Sa a baba$
+Sb ab aba$
+R2 A aba$
+Sa Aa ba$
+Sb Aab a$
+R2 AA a$
+Sa AAa $
+BT Aab a$
+Sa Aaba $
+R3 AB $
+R1 S $
+
+x pertence a L(G)
+
+
+* uma gramatica com ciclos possui equivalente sem ciclos
+* LR(1) mais abrangente de todas (desc ou asc)
+* só é analisado det. se possui um automato pilha deterministico
+
+
+
+S' -> S$				0
+S -> aSc | B		1,2
+B -> Bb  | &		3,4
+
+
+E0: S'->.S$ 		=> E1
+		
+		S -> .aSc		=> E2
+		S -> .B			=> E3
+		B -> .Bb		=> E3
+		B -> &			=> R4
+
+E1: S' -> S.$		=> HALT
+
+E2: S -> a.Sc		=> E4
+
+		S -> .aSc		=> E2
+		S -> .B			=> E3
+		B -> .Bb		=> E3
+		B -> &			=> R4
+
+E3: S -> B.			=> R2
+		S -> B.b		=> E5
+
+E4: S -> aS.c		=> E6
+
+E5: S -> Bb.		=> R3
+
+E6: S -> aSc.		=> R1
+
+
+* calcular os first e follow
+
+
+		a		b		c		$		S		B
+0		S2	R4	R4	R4	1		3
+1								H	
+2		S2	R4	R4	R4	4		3
+3				S5	R2	R2
+4						S6
+5				R3	R3	R3
+6						R1	R1
+
+
+0					abbc$
+0 2				bbc$
+0 2				Bbbc$
+0 2 3 		bbc$
+0 2				Bbc$
+0 2 3			bc$
+0 2 3 5		c$
+0 2				Bc$
+0 2 3			c$
+0 2				Sc$
+0 2 4			c$
+0 2 4 6		$
+0					S$
+0 1				$
+
+
+1 com $ da HALT => pertence a linguagem
+
+
+
+GLC > GLC nao amb > DET =(igual com 3 traços) LR(K) > LL(K) > LL(1) > Linguagem Regular
+LLC > LLC nao amb > LLC DET
+
+
+criar novo estado inicial, com transição (&, Z -> ZY)
+
+* pilha pra estado final => de todos os estados, criar transição para um novo estado final por (&, Y -> &)
+
+* estado final para pilha => de todos os estados finais, criar transições (&, qualquer -> &) para um estado, que desempilha qualquer coisa
+
+
+
